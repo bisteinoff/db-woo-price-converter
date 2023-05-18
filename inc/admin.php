@@ -3,14 +3,61 @@
 	$db_converter = new dbWooConverter();
 	$d = $db_converter->thisdir(); // domain for translate.wordpress.org
 
-	$currancy_from = sanitize_text_field ( get_option( 'db_woo_converter_currancy_from' ) );
-	$currancy_to = sanitize_text_field ( get_option( 'db_woo_converter_currancy_to' ) );
+	$currencies = array(
+		'USD' => array ( 'USD', 'Доллар США' ),
+		'EUR' => array ( 'EUR', 'Евро' ),
+		'AUD' => array ( 'AUD', 'Австралийский доллар' ),
+		'AZN' => array ( 'AZN', 'Азербайджанский манат' ),
+		'GBP' => array ( 'GBP', 'Фунт стерлингов Соединенного королевства' ),
+		'AMD' => array ( 'AMD', 'Армянских драмов' ),
+		'BYN' => array ( 'BYN', 'Белорусский рубль' ),
+		'BGN' => array ( 'BGN', 'Болгарский лев' ),
+		'BRL' => array ( 'BRL', 'Бразильский реал' ),
+		'HUF' => array ( 'HUF', 'Венгерских форинтов' ),
+		'VND' => array ( 'VND', 'Вьетнамских донгов' ),
+		'HKD' => array ( 'HKD', 'Гонконгский доллар' ),
+		'GEL' => array ( 'GEL', 'Грузинский лари' ),
+		'DKK' => array ( 'DKK', 'Датская крона' ),
+		'AED' => array ( 'AED', 'Дирхам ОАЭ' ),
+		'EGP' => array ( 'EGP', 'Египетских фунтов' ),
+		'INR' => array ( 'INR', 'Индийских рупий' ),
+		'IDR' => array ( 'IDR', 'Индонезийских рупий' ),
+		'KZT' => array ( 'KZT', 'Казахстанских тенге' ),
+		'CAD' => array ( 'CAD', 'Канадский доллар' ),
+		'QAR' => array ( 'QAR', 'Катарский риал' ),
+		'KGS' => array ( 'KGS', 'Киргизских сомов' ),
+		'CNY' => array ( 'CNY', 'Китайский юань' ),
+		'MDL' => array ( 'MDL', 'Молдавских леев' ),
+		'NZD' => array ( 'NZD', 'Новозеландский доллар' ),
+		'NOK' => array ( 'NOK', 'Норвежских крон' ),
+		'PLN' => array ( 'PLN', 'Польский злотый' ),
+		'RON' => array ( 'RON', 'Румынский лей' ),
+		'XDR' => array ( 'XDR', 'СДР (специальные права заимствования)' ),
+		'SGD' => array ( 'SGD', 'Сингапурский доллар' ),
+		'TJS' => array ( 'TJS', 'Таджикских сомони' ),
+		'THB' => array ( 'THB', 'Таиландских батов' ),
+		'TRY' => array ( 'TRY', 'Турецких лир' ),
+		'TMT' => array ( 'TMT', 'Новый туркменский манат' ),
+		'UZS' => array ( 'UZS', 'Узбекских сумов' ),
+		'UAH' => array ( 'UAH', 'Украинских гривен' ),
+		'CZK' => array ( 'CZK', 'Чешских крон' ),
+		'SEK' => array ( 'SEK', 'Шведских крон' ),
+		'CHF' => array ( 'CHF', 'Швейцарский франк' ),
+		'RSD' => array ( 'RSD', 'Сербских динаров' ),
+		'ZAR' => array ( 'ZAR', 'Южноафриканских рэндов' ),
+		'KRW' => array ( 'KRW', 'Вон Республики Корея' ),
+		'JPY' => array ( 'JPY', 'Японских иен' )
+	);
+
+	$currency_from = sanitize_text_field ( get_option( 'db_woo_converter_currency_from' ) );
+	$currency_to = sanitize_text_field ( get_option( 'db_woo_converter_currency_to' ) );
 	$date =  sanitize_text_field ( get_option( 'db_woo_converter_date' ) );
 	$date_cbr =  sanitize_text_field ( get_option( 'db_woo_converter_date_cbr' ) );
 	$rate_cbr = (float) get_option( 'db_woo_converter_rate_cbr' );
 	$rate = (float) get_option( 'db_woo_converter_rate' );
 	$if_cbr = (int) get_option( 'db_woo_converter_if_cbr' );
 	$margin = (float) get_option( 'db_woo_converter_margin' );
+	$if_change = false; // if the currency has changed it is true
 
 	// Getting the exchange rates from CBR. Source: https://www.cbr-xml-daily.ru/
 	function CBR_XML_Daily_Ru()
@@ -24,18 +71,6 @@
 		return $rates;
 	}
 
-	$now = date("ymdH");
-
-	if ( $date < $now - 3 )
-	{
-		$data = CBR_XML_Daily_Ru();
-		$date_cbr = sanitize_text_field ( $data->Date );
-		$rate_cbr = round ( $data->Valute->$currancy_from->Value , 2 );
-		update_option ( 'db_woo_converter_date_cbr', $date_cbr );
-		update_option ( 'db_woo_converter_rate_cbr', $rate_cbr );
-		update_option ( 'db_woo_converter_date', $now );
-	}
-
 	if ( isset ( $_POST['submit'] ) )
 	{
 
@@ -46,23 +81,25 @@
 		if ( function_exists('check_admin_referrer') )
 			check_admin_referrer( $d . '_form' );
 
-		// Currancy from
-		if ( !empty ( $_POST['currancy_from'] ) )
-		{
-			$currancy_from = sanitize_text_field ( $_POST['currancy_from'] );
-			update_option ( 'db_woo_converter_currancy_from', $currancy_from );
-		}
-		else
-			update_option ( 'db_woo_converter_currancy_from', 'USD' );
+		if ( $_POST['currency_from'] !== $currency_from || $_POST['currency_to'] !== $currency_to ) $if_change = true;
 
-		// Currancy to
-		if ( !empty ( $_POST['currancy_to'] ) )
+		// Currency from
+		if ( !empty ( $_POST['currency_from'] ) )
 		{
-			$currancy_to = sanitize_text_field ( $_POST['currancy_to'] );
-			update_option ( 'db_woo_converter_currancy_to', $currancy_to );
+			$currency_from = sanitize_text_field ( $_POST['currency_from'] );
+			update_option ( 'db_woo_converter_currency_from', $currency_from );
 		}
 		else
-			update_option ( 'db_woo_converter_currancy_to', 'RUR' );
+			update_option ( 'db_woo_converter_currency_from', 'USD' );
+
+		// Currency to
+		if ( !empty ( $_POST['currency_to'] ) )
+		{
+			$currency_to = sanitize_text_field ( $_POST['currency_to'] );
+			update_option ( 'db_woo_converter_currency_to', $currency_to );
+		}
+		else
+			update_option ( 'db_woo_converter_currency_to', 'RUR' );
 
 		// Custom Exchange Rate
 		if ( !empty ( $_POST['rate'] ) )
@@ -84,6 +121,18 @@
 
 	}
 
+	$now = date("ymdH");
+
+	if ( $date < $now - 3 || $if_change === true )
+	{
+		$data = CBR_XML_Daily_Ru();
+		$date_cbr = sanitize_text_field ( $data->Date );
+		$rate_cbr = round ( $data->Valute->$currency_from->Value , 2 );
+		update_option ( 'db_woo_converter_date_cbr', $date_cbr );
+		update_option ( 'db_woo_converter_rate_cbr', $rate_cbr );
+		update_option ( 'db_woo_converter_date', $now );
+	}
+
 ?>
 <div class='wrap db-woo-converter-admin'>
 
@@ -94,12 +143,6 @@
 	</div>
 
 	<h2><?php _e( "Settings", $d ) ?></h2>
-
-	<?php
-
-print_r($data);
-
-?>
 
 	<form name="db-woo-converter" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $d; ?>&amp;updated=true">
 
@@ -124,12 +167,12 @@ print_r($data);
 				<th scope="row">
 					<?php _e( "Convert from", $d ) ?>
 					<div class="db-woo-converter-field-description">
-						<?php _e( "The currancy of the prices in WooCommerce", $d ) ?>
+						<?php _e( "The currency of the prices in WooCommerce", $d ) ?>
 					</div>
 				</th>
 				<td>
-					<input type="text" name="currancy_from" id="db_woo_converter_currancy_from"
-							size="20" value="<?php echo $currancy_from; ?>" />
+					<input type="text" name="currency_from" id="db_woo_converter_currency_from"
+							size="20" value="<?php echo $currency_from; ?>" />
 				</td>
 				<td rowspan="2">
 					<div class="db-woo-converter-rate-cbr">
@@ -144,12 +187,12 @@ print_r($data);
 				<th scope="row">
 					<?php _e( "Convert to", $d ) ?>
 					<div class="db-woo-converter-field-description">
-						<?php _e( "The currancy of the prices shown on the website", $d ) ?>
+						<?php _e( "The currency of the prices shown on the website", $d ) ?>
 					</div>
 				</th>
 				<td>
-					<input type="text" name="currancy_to" id="db_woo_converter_currancy_to"
-							size="20" value="<?php echo $currancy_to; ?>" />
+					<input type="text" name="currency_to" id="db_woo_converter_currency_to"
+							size="20" value="<?php echo $currency_to; ?>" />
 				</td>
 			</tr>
 			<tr valign="top">

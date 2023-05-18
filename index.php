@@ -3,7 +3,7 @@
 Plugin Name: DB Woocommerce Price Converter
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.0
+Version: 1.0.1
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 License: GPL2
@@ -36,8 +36,8 @@ License: GPL2
 		function dbWooConverter()
 		{
 
-			add_option( 'db_woo_converter_currancy_from', 'USD' );
-			add_option( 'db_woo_converter_currancy_to', 'RUR' );
+			add_option( 'db_woo_converter_currency_from', 'USD' );
+			add_option( 'db_woo_converter_currency_to', 'RUR' );
 			add_option( 'db_woo_converter_date' ); // the date when the exchange rates were uploaded from CBR
 			add_option( 'db_woo_converter_date_cbr' ); // the date of update by CBR
 			add_option( 'db_woo_converter_rate_cbr' ); // the exchange rate from CBR
