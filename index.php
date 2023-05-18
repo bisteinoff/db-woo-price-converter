@@ -3,7 +3,7 @@
 Plugin Name: DB Woocommerce Price Converter
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.0.1
+Version: 1.0.2
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 License: GPL2
@@ -42,7 +42,7 @@ License: GPL2
 			add_option( 'db_woo_converter_date_cbr' ); // the date of update by CBR
 			add_option( 'db_woo_converter_rate_cbr' ); // the exchange rate from CBR
 			add_option( 'db_woo_converter_rate', '1' ); // the exchange rate established manually
-			add_option( 'db_woo_converter_if_cbr', '1' ); // if true than use the exchange rate of CBR for calculations, else the exchange rate established manually will be used
+			add_option( 'db_woo_converter_if_cbr' ); // if ON than the exchange rate established manually will be used, else use the exchange rate of CBR for calculations
 			add_option( 'db_woo_converter_margin', '0' );
 
 			add_filter( 'plugin_action_links_' . $this->thisdir() . '/index.php', array(&$this, 'db_settings_link') );
@@ -54,6 +54,17 @@ License: GPL2
 						99
 			);
 
+			$date =  sanitize_text_field ( get_option( 'db_woo_converter_date' ) );
+			$now = date("ymdH");
+
+			if ( $date < $now - 3 )
+			{
+				$currency_from = sanitize_text_field ( get_option( 'db_woo_converter_currency_from' ) );
+				$this -> currency( $currency_from, $now );
+			}
+
+			add_filter('woocommerce_get_price', array(&$this, 'convert_price'), 10, 2);
+			add_filter('woocommerce_get_regular_price', array(&$this, 'convert_price'), 10, 2);
 		}
 
 		function admin() {
@@ -104,6 +115,42 @@ License: GPL2
 
 			return $links;
 
+		}
+
+		// Getting the exchange rates from CBR. Source: https://www.cbr-xml-daily.ru/
+		function CBR_XML_Daily_Ru()
+		{
+			static $rates;
+			
+			if ($rates === null) {
+				$rates = json_decode(file_get_contents('https://www.cbr-xml-daily.ru/daily_json.js'));
+			}
+			
+			return $rates;
+		}
+
+		function currency( $currency, $time )
+		{
+			$data = $this -> CBR_XML_Daily_Ru();
+			$date_cbr = sanitize_text_field ( $data->Date );
+			$rate_cbr = round ( $data->Valute->$currency->Value , 2 );
+			update_option ( 'db_woo_converter_date_cbr', $date_cbr );
+			update_option ( 'db_woo_converter_rate_cbr', $rate_cbr );
+			update_option ( 'db_woo_converter_date', $time );
+		}
+
+		function convert_price( $price, $product )
+		{
+			global $post, $blog_id;
+			$product = wc_get_product( '$post_id' );
+			$post_id = $post->ID;
+			
+			$if_cbr = get_option( 'db_woo_converter_if_cbr' );
+			$rate = ( $if_cbr === 'on' ? get_option( 'db_woo_converter_rate' ) : get_option( 'db_woo_converter_rate_cbr' ) );
+			$margin = get_option( 'db_woo_converter_margin' );
+			
+			$price = round ( $price * ( $rate + $margin ) , -2 );
+			return $price;
 		}
 
 	}

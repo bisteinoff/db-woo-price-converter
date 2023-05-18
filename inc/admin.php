@@ -1,14 +1,16 @@
 <?php // THE SETTINGS PAGE
 
 	$db_converter = new dbWooConverter();
-	$d = $db_converter->thisdir(); // domain for translate.wordpress.org
+	$d = $db_converter -> thisdir(); // domain for translate.wordpress.org
 
 	$currencies = array(
-		'USD' => array ( 'USD', 'Доллар США' ),
-		'EUR' => array ( 'EUR', 'Евро' ),
+		'USD' => array ( '$', 'Доллар США' ),
+		'EUR' => array ( '€', 'Евро' ),
+		'GBP' => array ( '£', 'Британский фунт стерлингов' ),
+		'CNY' => array ( '¥', 'Китайский юань' ),
+		'JPY' => array ( '¥', 'Японская иена' ),
 		'AUD' => array ( 'AUD', 'Австралийский доллар' ),
 		'AZN' => array ( 'AZN', 'Азербайджанский манат' ),
-		'GBP' => array ( 'GBP', 'Фунт стерлингов Соединенного королевства' ),
 		'AMD' => array ( 'AMD', 'Армянских драмов' ),
 		'BYN' => array ( 'BYN', 'Белорусский рубль' ),
 		'BGN' => array ( 'BGN', 'Болгарский лев' ),
@@ -26,13 +28,12 @@
 		'CAD' => array ( 'CAD', 'Канадский доллар' ),
 		'QAR' => array ( 'QAR', 'Катарский риал' ),
 		'KGS' => array ( 'KGS', 'Киргизских сомов' ),
-		'CNY' => array ( 'CNY', 'Китайский юань' ),
 		'MDL' => array ( 'MDL', 'Молдавских леев' ),
 		'NZD' => array ( 'NZD', 'Новозеландский доллар' ),
 		'NOK' => array ( 'NOK', 'Норвежских крон' ),
 		'PLN' => array ( 'PLN', 'Польский злотый' ),
 		'RON' => array ( 'RON', 'Румынский лей' ),
-		'XDR' => array ( 'XDR', 'СДР (специальные права заимствования)' ),
+		'XDR' => array ( 'XDR', 'СДР' ),
 		'SGD' => array ( 'SGD', 'Сингапурский доллар' ),
 		'TJS' => array ( 'TJS', 'Таджикских сомони' ),
 		'THB' => array ( 'THB', 'Таиландских батов' ),
@@ -45,8 +46,7 @@
 		'CHF' => array ( 'CHF', 'Швейцарский франк' ),
 		'RSD' => array ( 'RSD', 'Сербских динаров' ),
 		'ZAR' => array ( 'ZAR', 'Южноафриканских рэндов' ),
-		'KRW' => array ( 'KRW', 'Вон Республики Корея' ),
-		'JPY' => array ( 'JPY', 'Японских иен' )
+		'KRW' => array ( 'KRW', 'Вон Республики Корея' )
 	);
 
 	$currency_from = sanitize_text_field ( get_option( 'db_woo_converter_currency_from' ) );
@@ -55,21 +55,10 @@
 	$date_cbr =  sanitize_text_field ( get_option( 'db_woo_converter_date_cbr' ) );
 	$rate_cbr = (float) get_option( 'db_woo_converter_rate_cbr' );
 	$rate = (float) get_option( 'db_woo_converter_rate' );
-	$if_cbr = (int) get_option( 'db_woo_converter_if_cbr' );
+	$if_cbr = sanitize_text_field ( get_option( 'db_woo_converter_if_cbr' ) );
 	$margin = (float) get_option( 'db_woo_converter_margin' );
 	$if_change = false; // if the currency has changed it is true
 
-	// Getting the exchange rates from CBR. Source: https://www.cbr-xml-daily.ru/
-	function CBR_XML_Daily_Ru()
-	{
-		static $rates;
-		
-		if ($rates === null) {
-			$rates = json_decode(file_get_contents('https://www.cbr-xml-daily.ru/daily_json.js'));
-		}
-		
-		return $rates;
-	}
 
 	if ( isset ( $_POST['submit'] ) )
 	{
@@ -101,6 +90,10 @@
 		else
 			update_option ( 'db_woo_converter_currency_to', 'RUR' );
 
+		// Enable Exchange Rate of CBR
+		$if_cbr = sanitize_text_field ( $_POST['if_cbr'] );
+		update_option ( 'db_woo_converter_if_cbr', $if_cbr );
+
 		// Custom Exchange Rate
 		if ( !empty ( $_POST['rate'] ) )
 		{
@@ -121,16 +114,14 @@
 
 	}
 
+
 	$now = date("ymdH");
 
 	if ( $date < $now - 3 || $if_change === true )
 	{
-		$data = CBR_XML_Daily_Ru();
-		$date_cbr = sanitize_text_field ( $data->Date );
-		$rate_cbr = round ( $data->Valute->$currency_from->Value , 2 );
-		update_option ( 'db_woo_converter_date_cbr', $date_cbr );
-		update_option ( 'db_woo_converter_rate_cbr', $rate_cbr );
-		update_option ( 'db_woo_converter_date', $now );
+		$db_converter -> currency( $currency_from, $now );
+		$date_cbr =  sanitize_text_field ( get_option( 'db_woo_converter_date_cbr' ) );
+		$rate_cbr = (float) get_option( 'db_woo_converter_rate_cbr' );
 	}
 
 ?>
@@ -171,8 +162,17 @@
 					</div>
 				</th>
 				<td>
-					<input type="text" name="currency_from" id="db_woo_converter_currency_from"
-							size="20" value="<?php echo $currency_from; ?>" />
+					<select type="text" name="currency_from" id="db_woo_converter_currency_from">
+						<?php
+							foreach ($currencies as $value => $currency)
+							{
+						?>
+						<option value="<?php echo $value; ?>" <?php selected( $currency_from, $value ); ?>>
+							<?php echo $currency[0] ?> - <?php echo $currency[1] ?></option>
+						<?php
+							}
+						?>
+					</select>
 				</td>
 				<td rowspan="2">
 					<div class="db-woo-converter-rate-cbr">
@@ -191,8 +191,9 @@
 					</div>
 				</th>
 				<td>
-					<input type="text" name="currency_to" id="db_woo_converter_currency_to"
-							size="20" value="<?php echo $currency_to; ?>" />
+					<select type="text" name="currency_to" id="db_woo_converter_currency_to">
+						<option value="RUR" <?php selected( $currency_to, 'RUR' ); ?>>₽ - <?php _e( 'Russian Ruble' , $d ) ?></option>
+					</select>
 				</td>
 			</tr>
 			<tr valign="top">
@@ -203,15 +204,20 @@
 					</div>
 				</th>
 				<td>
-					<input type="text" name="if_cbr" id="db_woo_converter_if_cbr"
-							size="20" value="<?php echo $if_cbr; ?>" />
-					<input type="text" name="rate" id="db_woo_converter_rate"
-							size="20" value="<?php echo $rate; ?>" />
+					<p>
+						<input type="text" name="rate" id="db_woo_converter_rate"
+							size="15" value="<?php echo $rate; ?>" />
+					</p>
+					<p>
+						<input type="checkbox" name="if_cbr" id="db_woo_converter_if_cbr"
+							<?php if ( $if_cbr === 'on') { ?>checked<?php } ?> />
+						<label for="db_woo_converter_if_cbr"><?php _e( "Enable", $d ) ?></label>
+					</p>
 				</td>
 				<td rowspan="2">
 					<div class="db-woo-converter-rate-website">
 						<?php _e( "Exchange Rate On Your Website", $d ) ?>: <span><?php
-							echo ( $if_cbr === '1' ? $rate_cbr + $margin : $rate + $margin );
+							echo ( $if_cbr === 'on' ? $rate + $margin : $rate_cbr + $margin );
 						?></span>
 					</div>
 				</td>
@@ -225,7 +231,7 @@
 				</th>
 				<td>
 					<input type="text" name="margin" id="db_woo_converter_margin"
-							size="20" value="<?php echo $margin; ?>" />
+							size="15" value="<?php echo $margin; ?>" />
 				</td>
 			</tr>
 		</table>
