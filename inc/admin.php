@@ -235,7 +235,9 @@
 				</td>
 			</tr>
 		</table>
-
+<?php 
+		$db_converter -> currency( $currency_from, $now );
+		?>
 		<input type="hidden" name="action" value="update" />
 
 		<input type="hidden" name="page_options" value="db_woo_converter_cols" />

@@ -3,7 +3,7 @@
 Plugin Name: DB Woocommerce Price Converter
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.0.2
+Version: 1.1
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 License: GPL2
@@ -43,7 +43,8 @@ License: GPL2
 			add_option( 'db_woo_converter_rate_cbr' ); // the exchange rate from CBR
 			add_option( 'db_woo_converter_rate', '1' ); // the exchange rate established manually
 			add_option( 'db_woo_converter_if_cbr' ); // if ON than the exchange rate established manually will be used, else use the exchange rate of CBR for calculations
-			add_option( 'db_woo_converter_margin', '0' );
+			add_option( 'db_woo_converter_margin', '0' ); // the amount will be added to the exchange rate
+			add_option( 'db_woo_converter_status', '1' ); // 0 - the data from CBR is not received, 1 - the data from CBR received
 
 			add_filter( 'plugin_action_links_' . $this->thisdir() . '/index.php', array(&$this, 'db_settings_link') );
 			add_action( 'admin_menu', array (&$this, 'admin') );
@@ -132,11 +133,32 @@ License: GPL2
 		function currency( $currency, $time )
 		{
 			$data = $this -> CBR_XML_Daily_Ru();
-			$date_cbr = sanitize_text_field ( $data->Date );
-			$rate_cbr = round ( $data->Valute->$currency->Value , 2 );
-			update_option ( 'db_woo_converter_date_cbr', $date_cbr );
-			update_option ( 'db_woo_converter_rate_cbr', $rate_cbr );
-			update_option ( 'db_woo_converter_date', $time );
+			$count = count( (array)$data );
+			$status_old = (int) get_option( 'db_woo_converter_status' );
+
+			if ( !empty($data) && $count > 0 )
+			{
+				$date_cbr = sanitize_text_field ( $data->Date );
+				$rate_cbr = (float) $data->Valute->$currency->Value;
+
+				if ( !empty( $date_cbr ) && $rate_cbr > 0 )
+				{
+					if ( $rate_cbr >= 0.005 ) $rate_cbr = round ( $rate_cbr , 2 );
+
+					update_option ( 'db_woo_converter_date_cbr', $date_cbr );
+					update_option ( 'db_woo_converter_rate_cbr', $rate_cbr );
+					update_option ( 'db_woo_converter_date', $time );
+					update_option ( 'db_woo_converter_status', '1' );
+
+					$status_new = 1;
+				}
+				else
+					$status_new = 0;
+			}
+			else
+				$status_new = 0;
+
+			$this -> status( $status_old, $status_new );
 		}
 
 		function convert_price( $price, $product )
@@ -151,6 +173,87 @@ License: GPL2
 			
 			$price = round ( $price * ( $rate + $margin ) , -2 );
 			return $price;
+		}
+
+		function status( $old, $new )
+		{
+			$date =  sanitize_text_field ( get_option( 'db_woo_converter_date' ) );
+			$now = date("ymdH");
+			$dif = $now - $date; // the mail will be sent only after at least 24 hours of inaccessibility to the data from CBR
+
+			if ( $old !== $new && $dif > 24 )
+			{
+				update_option ( 'db_woo_converter_status', '0' );
+				$message = ( $new === 1 ? 'fixed' : 'error' );
+				$this -> mail( $message );
+			}
+		}
+
+		function mail( $arg )
+		{
+			if ( function_exists( 'mail' ) )
+			{
+				$email = array();
+				$d = $this -> thisdir();
+				$site_url = get_site_url();
+				$site_url = trim( str_replace( array( 'http://', 'https://' ), '', $site_url ) );
+				if ( substr( $site_url, 0, 4 ) === 'www.' )
+					$site_url = substr( $site_url , 4 );
+
+				switch ( $arg )
+				{
+					case 'fixed' :
+
+						$email['subject'] = 
+							__( "Problem fixed" , $d ) . ": " .
+							__("The data from CBR is received", $d ) . " | " .
+							$site_url;
+
+						$email['message'] = 
+							"<h2>" . __("DB Woocommerce Price Converter", $d ) . "</h2>" .
+							"<p><strong>" . __( "The data from the CBR is received" , $d ) . ". " .
+							__( "The problem was fixed" , $d ) . ".</strong></p> " .
+							"<p>" . __( "Now you can use the exchange rate from CBR for converting the prices again" , $d ) . ".</p>";
+
+						break;
+
+					case 'error' :
+
+						$email['subject'] = 
+							__( "Error" , $d ) . ": " .
+							__("The data from CBR is inaccessible for more than 24 hours", $d ) . " | " .
+							$site_url;
+
+						$email['message'] = 
+							"<h2>" . __("DB Woocommerce Price Converter", $d ) . "</h2>" .
+							"<p><strong>" . __( "The API of CBR used in the plugin doesn't work correctly any longer" , $d ) . ".</strong></p> " .
+							"<p>" . __( "If the problem is fixed by CBR you will get another message from us" , $d ) . ".</p>" .
+							"<p>" . __( "The latest exchange rate is fixed in the database" , $d ) . ". " .
+							__( "You can still use it or change it to your own custom exchange rate" , $d ) . ".</p>" .
+							"<p>" . __( "You can also contact us and ask to fix the problem" , $d ) . 
+							": <a href='mailto:bisteinoff@gmail.com'>bisteinoff@gmail.com</a>.</p>";
+
+						break;
+				}
+
+				if ( !empty( $email ) )
+				{
+					// sending a message
+					$email['to'] = get_bloginfo('admin_email');
+					$email['from'] = 'no-reply@' . $site_url;
+					$email['message'] .=
+						"<hr />" .
+						"<p>" . __( "Denis BISTEINOV" , $d ) . "<br />" . 
+						"<a href='https://bisteinoff.com' target='_blank'>bisteinoff.com</a></p>";
+
+					$headers[] = 'MIME-Version: 1.0';
+					$headers[] = 'Content-type: text/html; charset=iso-8859-1';
+					$headers[] = 'From: Wordpress <' . $email['from'] . '>';
+
+					mail( $email['to'], $email['subject'], $email['message'], implode( "\r\n", $headers ) );
+
+				}
+			}
 		}
 
 	}

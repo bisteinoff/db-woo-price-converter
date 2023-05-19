@@ -4,7 +4,7 @@ Donate link: https://bisteinoff.com
 Tags: wordpress, wocommerce, price, converter, currency, exchange rate, cbr
 Requires at least: 4.6
 Tested up to: 6.2
-Stable tag: 1.0.2
+Stable tag: 1.1
 License: GPL2
 
 The plugin is used for converting the prices from one currency to another.
@@ -20,6 +20,9 @@ DB Woocommerce Price Converter is an easy solution to manage the prices if you n
 3. Enjoy
 
 == Changelog ==
+
+= 1.1 =
+* New actions in case if the data from CBR won't be received
 
 = 1.0 =
 * Initial release.
