@@ -3,13 +3,13 @@
 Plugin Name: DB Woocommerce Price Converter
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.1.1
+Version: 1.2
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 License: GPL2
 */
 
-/*  Copyright YEAR  PLUGIN_AUTHOR_NAME  (email : bisteinoff@gmail.com)
+/*  Copyright 2023  Denis BISTEINOV  (email : bisteinoff@gmail.com)
  
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -45,6 +45,7 @@ License: GPL2
 			add_option( 'db_woo_converter_if_cbr' ); // if ON than the exchange rate established manually will be used, else use the exchange rate of CBR for calculations
 			add_option( 'db_woo_converter_margin', '0' ); // the amount will be added to the exchange rate
 			add_option( 'db_woo_converter_status', '1' ); // 0 - the data from CBR is not received, 1 - the data from CBR received
+			add_option( 'db_woo_converter_round', '0' ); // price rounding
 
 			add_filter( 'plugin_action_links_' . $this->thisdir() . '/index.php', array(&$this, 'db_settings_link') );
 			add_action( 'admin_menu', array (&$this, 'admin') );
@@ -161,6 +162,16 @@ License: GPL2
 			$this -> status( $status_old, $status_new );
 		}
 
+		function custom_price_decimals( $decimals )
+		{
+			global $product;
+		
+			if( is_a( $product, 'WC_Product' ) ){
+				$decimals = 2;
+			}
+			return $decimals;
+		}
+
 		function convert_price( $price, $product )
 		{
 			global $post, $blog_id;
@@ -171,7 +182,52 @@ License: GPL2
 			$rate = ( $if_cbr === 'on' ? get_option( 'db_woo_converter_rate' ) : get_option( 'db_woo_converter_rate_cbr' ) );
 			$margin = get_option( 'db_woo_converter_margin' );
 			
-			$price = round ( $price * ( $rate + $margin ) , -2 );
+			$price = $price * ( $rate + $margin );
+
+			$round = (int) get_option( 'db_woo_converter_round' );
+			switch ($round)
+			{
+				case 0  :
+					$price = round( $price , 2 );
+					break;
+				case 1  :
+					$price = round( $price , 1 );
+					break;
+				case 2  :
+					$price = round ( $price , 0 );
+					break;
+				case 3  :
+					$price = round( $price , -1 );
+					break;
+				case 4  :
+					$price = round( $price , -2 );
+					break;
+				case 5  :
+					$price = round( $price , -3 );
+					break;
+				case 6  :
+					$price = round( $price , 0 ) - 0.01;
+					add_filter( 'wc_get_price_decimals', array(&$this, 'custom_price_decimals'), 10, 1 );
+					break;
+				case 7  :
+					$price = round( $price , 1 ) - 0.01;
+					add_filter( 'wc_get_price_decimals', array(&$this, 'custom_price_decimals'), 10, 1 );
+					break;
+				case 8  :
+					$price = round( $price , 0 ) - 0.1;
+					add_filter( 'wc_get_price_decimals', array(&$this, 'custom_price_decimals'), 10, 1 );
+					break;
+				case 9  :
+					$price = round( $price , -1 ) - 1;
+					break;
+				case 10 :
+					$price = round( $price , -2 ) - 1;
+					break;
+				case 11 :
+					$price = round( $price , -3 ) - 1;
+					break;
+			}
+
 			return $price;
 		}
 

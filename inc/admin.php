@@ -57,6 +57,7 @@
 	$rate = (float) get_option( 'db_woo_converter_rate' );
 	$if_cbr = sanitize_text_field ( get_option( 'db_woo_converter_if_cbr' ) );
 	$margin = (float) get_option( 'db_woo_converter_margin' );
+	$round = (int) get_option( 'db_woo_converter_round' );
 	$if_change = false; // if the currency has changed it is true
 
 
@@ -111,6 +112,15 @@
 		}
 		else
 			update_option ( 'db_woo_converter_margin', '0' );
+
+		// Rounding
+		if ( !empty ( $_POST['round'] ) )
+		{
+			$round = (int) $_POST['round'];
+			update_option ( 'db_woo_converter_round', $round );
+		}
+		else
+			update_option ( 'db_woo_converter_round', '0' );
 
 	}
 
@@ -214,7 +224,7 @@
 						<label for="db_woo_converter_if_cbr"><?php _e( "Enable", $d ) ?></label>
 					</p>
 				</td>
-				<td rowspan="2">
+				<td rowspan="3">
 					<div class="db-woo-converter-rate-website">
 						<?php _e( "Exchange Rate On Your Website", $d ) ?>: <span><?php
 							echo ( $if_cbr === 'on' ? $rate + $margin : $rate_cbr + $margin );
@@ -232,6 +242,33 @@
 				<td>
 					<input type="text" name="margin" id="db_woo_converter_margin"
 							size="15" value="<?php echo $margin; ?>" />
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row">
+					<?php _e( "Rounding", $d ) ?>
+					<div class="db-woo-converter-field-description">
+						<?php _e( "You can set the way the prices will be rounded", $d ) ?>
+					</div>
+				</th>
+				<td>
+					<select type="text" name="round" id="db_woo_converter_round">
+						<option value="0"  <?php selected( $round, '0'  ); ?>>1&nbsp;234.56</option>
+						<option value="1"  <?php selected( $round, '1'  ); ?>>1&nbsp;234.60</option>
+						<option value="2"  <?php selected( $round, '2'  ); ?>>1&nbsp;235</option>
+						<option value="3"  <?php selected( $round, '3'  ); ?>>1&nbsp;230</option>
+						<option value="4"  <?php selected( $round, '4'  ); ?>>1&nbsp;200</option>
+						<option value="5"  <?php selected( $round, '5'  ); ?>>1&nbsp;000</option>
+						<option value="6"  <?php selected( $round, '6'  ); ?>>1&nbsp;234.99</option>
+						<option value="7"  <?php selected( $round, '7'  ); ?>>1&nbsp;234.59</option>
+						<option value="8"  <?php selected( $round, '8'  ); ?>>1&nbsp;234.90</option>
+						<option value="9"  <?php selected( $round, '9'  ); ?>>1&nbsp;229</option>
+						<option value="10" <?php selected( $round, '10' ); ?>>1&nbsp;199</option>
+						<option value="11" <?php selected( $round, '11' ); ?>>999</option>
+					</select>
+					<div class="db-woo-converter-field-description">
+						<?php _e( "Choose the example, how 1&nbsp;234.56 should be rounded", $d ) ?>
+					</div>
 				</td>
 			</tr>
 		</table>
