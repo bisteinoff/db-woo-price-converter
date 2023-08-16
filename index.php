@@ -3,7 +3,7 @@
 Plugin Name: DB Woocommerce Price Converter
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.2
+Version: 1.2.1
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 License: GPL2
@@ -65,7 +65,7 @@ License: GPL2
 				$this -> currency( $currency_from, $now );
 			}
 
-			add_filter('woocommerce_get_price', array(&$this, 'convert_price'), 10, 2);
+			add_filter('woocommerce_product_get_price', array(&$this, 'convert_price'), 10, 2);
 			add_filter('woocommerce_get_regular_price', array(&$this, 'convert_price'), 10, 2);
 		}
 
