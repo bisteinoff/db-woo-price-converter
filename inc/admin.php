@@ -1,5 +1,7 @@
 <?php // THE SETTINGS PAGE
 
+	if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 	$db_converter = new dbWooConverter();
 	$d = $db_converter -> thisdir(); // domain for translate.wordpress.org
 
