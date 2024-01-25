@@ -3,13 +3,13 @@
 Plugin Name: DB Woocommerce Price Converter
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.2.2
+Version: 1.3
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 License: GPL2
 */
 
-/*  Copyright 2023  Denis BISTEINOV  (email : bisteinoff@gmail.com)
+/*  Copyright 2024  Denis BISTEINOV  (email : bisteinoff@gmail.com)
  
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -50,7 +50,7 @@ License: GPL2
 			add_option( 'db_woo_converter_round', '0' ); // price rounding
 
 			add_filter( 'plugin_action_links_' . $this->thisdir() . '/index.php', array(&$this, 'db_settings_link') );
-			add_action( 'admin_menu', array (&$this, 'admin') );
+			add_action( 'admin_menu', array( &$this, 'admin' ) );
 
 			add_action( 'admin_footer', function() {
 							wp_enqueue_style( $this->thisdir() . '-admin', plugin_dir_url( __FILE__ ) . 'css/admin.css' );
@@ -67,13 +67,15 @@ License: GPL2
 				$this -> currency( $currency_from, $now );
 			}
 
-			add_filter('woocommerce_product_get_price', array(&$this, 'convert_price'), 10, 2);
-			add_filter('woocommerce_get_regular_price', array(&$this, 'convert_price'), 10, 2);
+			add_filter( 'woocommerce_product_get_price', array( &$this, 'convert_price' ), 10, 2 );
+			add_filter( 'woocommerce_get_regular_price', array( &$this, 'convert_price' ), 10, 2 );
+
+			add_action( 'wpseo_register_extra_replacements', array( &$this, 'db_register_yoast_vars' ) );
 		}
 
 		function admin() {
 
-			if ( function_exists('add_menu_page') )
+			if ( function_exists( 'add_menu_page' ) )
 			{
 
 				$svg = new DOMDocument();
@@ -81,11 +83,11 @@ License: GPL2
 				$icon = $svg -> saveHTML( $svg -> getElementsByTagName('svg')[0] );
 
 				add_menu_page(
-					__('DB Woocommerce Price Converter' , $this->thisdir() ),
-					__('Price Converter' , $this->thisdir() ),
+					esc_html__('DB Woocommerce Price Converter' , $this->thisdir() ),
+					esc_html__('Price Converter' , $this->thisdir() ),
 					'manage_options',
 					$this->thisdir(),
-					array (&$this, 'admin_page_callback'),
+					array( &$this, 'admin_page_callback' ),
 					'data:image/svg+xml;base64,' . base64_encode( $icon ),
 					27
 					);
@@ -175,15 +177,11 @@ License: GPL2
 		}
 
 		function convert_price( $price, $product )
-		{
-			global $post, $blog_id;
-			$product = wc_get_product( '$post_id' );
-			$post_id = $post->ID;
-			
+		{	
 			$if_cbr = get_option( 'db_woo_converter_if_cbr' );
 			$rate = ( $if_cbr === 'on' ? get_option( 'db_woo_converter_rate' ) : get_option( 'db_woo_converter_rate_cbr' ) );
 			$margin = get_option( 'db_woo_converter_margin' );
-			
+
 			$price = $price * ( $rate + $margin );
 
 			$round = (int) get_option( 'db_woo_converter_round' );
@@ -209,15 +207,15 @@ License: GPL2
 					break;
 				case 6  :
 					$price = round( $price , 0 ) - 0.01;
-					add_filter( 'wc_get_price_decimals', array(&$this, 'custom_price_decimals'), 10, 1 );
+					add_filter( 'wc_get_price_decimals', array( &$this, 'custom_price_decimals' ), 10, 1 );
 					break;
 				case 7  :
 					$price = round( $price , 1 ) - 0.01;
-					add_filter( 'wc_get_price_decimals', array(&$this, 'custom_price_decimals'), 10, 1 );
+					add_filter( 'wc_get_price_decimals', array( &$this, 'custom_price_decimals' ), 10, 1 );
 					break;
 				case 8  :
 					$price = round( $price , 0 ) - 0.1;
-					add_filter( 'wc_get_price_decimals', array(&$this, 'custom_price_decimals'), 10, 1 );
+					add_filter( 'wc_get_price_decimals', array( &$this, 'custom_price_decimals' ), 10, 1 );
 					break;
 				case 9  :
 					$price = round( $price , -1 ) - 1;
@@ -312,6 +310,20 @@ License: GPL2
 
 				}
 			}
+		}
+
+		function db_register_yoast_vars() {
+
+			/**
+			 * @param %%wc_price%% - change the variable for the calculated price in snippet
+			 */
+			if ( function_exists( 'wpseo_register_var_replacement' ) )
+				wpseo_register_var_replacement( '%%wc_price%%', function() {
+					global $product;
+					$price = $product->get_price();
+					return $price;
+				}, 'advanced', 'Variable for the calculated price in snippet' );
+
 		}
 
 	}
