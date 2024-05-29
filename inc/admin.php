@@ -127,9 +127,11 @@
 	}
 
 
-	$now = date( "ymdH" );
+	$date_timezone = substr( $date_cbr, -6, 3 );
+	$date_span     = (int) $date_timezone;
+	$now           = gmdate( "ymdH" );
 
-	if ( $date < $now - 3 || $if_change === true )
+	if ( $date - $date_span < $now - 3 || $if_change === true )
 	{
 		$db_converter->currency( $currency_from, $now );
 		$date_cbr = sanitize_text_field( get_option( 'db_woo_converter_date_cbr' ) );
@@ -147,7 +149,7 @@
 
 	<h2><?php esc_html_e( 'Settings', 'db-woo-price-converter' ) ?></h2>
 
-	<form name="db-woo-converter" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $d; ?>&amp;updated=true">
+	<form name="db-woo-converter" method="post" action="<?php echo esc_html( sanitize_text_field( $_SERVER['PHP_SELF'] ) ) ?>?page=<?php echo esc_html( sanitize_text_field( $d ) ) ?>&amp;updated=true">
 
 		<table class="form-table db-woo-converter-table" width="100%">
 			<tr valign="top">
@@ -174,8 +176,8 @@
 							foreach ($currencies as $value => $currency)
 							{
 						?>
-						<option value="<?php echo $value; ?>" <?php selected( $currency_from, $value ); ?>>
-							<?php echo $currency[0] ?> - <?php echo $currency[1] ?></option>
+						<option value="<?php echo esc_html( sanitize_text_field( $value ) ) ?>" <?php selected( $currency_from, $value ); ?>>
+							<?php echo esc_html( sanitize_text_field( $currency[ 0 ] ) ) ?> - <?php echo esc_html( sanitize_text_field( $currency[ 1 ] ) ) ?></option>
 						<?php
 							}
 						?>
@@ -183,10 +185,10 @@
 				</td>
 				<td rowspan="2">
 					<div class="db-woo-converter-rate-cbr">
-						<?php esc_html_e( 'Exchange Rate of CBR', 'db-woo-price-converter' ) ?>: <span><?php echo $rate_cbr; ?></span>
+						<?php esc_html_e( 'Exchange Rate of CBR', 'db-woo-price-converter' ) ?>: <span><?php echo esc_html( sanitize_text_field( $rate_cbr ) ) ?></span>
 					</div>
 					<div class="db-woo-converter-date-cbr">
-						<?php esc_html_e( 'Date', 'db-woo-price-converter' ) ?>: <span><?php echo $date_cbr; ?></span>
+						<?php esc_html_e( 'Date', 'db-woo-price-converter' ) ?>: <span><?php echo esc_html( sanitize_text_field( $date_cbr ) ) ?></span>
 					</div>
 				</td>
 			</tr>
@@ -213,7 +215,7 @@
 				<td>
 					<p>
 						<input type="text" name="rate" id="db_woo_converter_rate"
-							size="15" value="<?php echo $rate; ?>" />
+							size="15" value="<?php echo esc_html( sanitize_text_field( $rate ) ) ?>" />
 					</p>
 					<p>
 						<input type="checkbox" name="if_cbr" id="db_woo_converter_if_cbr"
@@ -224,7 +226,8 @@
 				<td rowspan="3">
 					<div class="db-woo-converter-rate-website">
 						<?php esc_html_e( 'Exchange Rate On Your Website', 'db-woo-price-converter' ) ?>: <span><?php
-							echo ( $if_cbr === 'on' ? $rate + $margin : $rate_cbr + $margin );
+							$rate_final = ( $if_cbr === 'on' ? $rate + $margin : $rate_cbr + $margin );
+							echo esc_html( sanitize_text_field( $rate_final ) );
 						?></span>
 					</div>
 				</td>
@@ -238,7 +241,7 @@
 				</th>
 				<td>
 					<input type="text" name="margin" id="db_woo_converter_margin"
-							size="15" value="<?php echo $margin; ?>" />
+							size="15" value="<?php echo esc_html( sanitize_text_field( $margin ) ) ?>" />
 				</td>
 			</tr>
 			<tr valign="top">

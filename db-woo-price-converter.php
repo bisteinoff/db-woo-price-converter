@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: DB Woocommerce Price Converter
+Plugin Name: DB Woo Price Converter for Woocommerce
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.4.1
+Version: 1.5
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 Text Domain: db-woo-price-converter
@@ -27,6 +27,8 @@ License: GPL2
 */
 
 	if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+	define( 'DB_WOO_CONVERTER_PLUGIN_VERSION', '1.5' );
 
 	class DB_WOO_CONVERTER_Init
 	{
@@ -54,13 +56,13 @@ License: GPL2
 			add_action( 'admin_menu', array( &$this, 'admin' ) );
 
 			add_action( 'admin_footer', function() {
-							wp_enqueue_style( $this->thisdir() . '-admin', plugin_dir_url( __FILE__ ) . 'css/admin.css' );
+							wp_enqueue_style( $this->thisdir() . '-admin', plugin_dir_url( __FILE__ ) . 'css/admin.min.css', [], DB_WOO_CONVERTER_PLUGIN_VERSION, 'all' );
 						},
 						99
 			);
 
 			$date = get_option( 'db_woo_converter_date' );
-			$now = date( "ymdH" );
+			$now  = gmdate( "ymdH" );
 
 			if ( $date < $now - 3 )
 			{
@@ -130,9 +132,9 @@ License: GPL2
 			static $rates;
 			
 			if ( $rates === null ) {
-				$rates = json_decode( file_get_contents( 'https://www.cbr-xml-daily.ru/daily_json.js' ) );
+				$rates = json_decode( wp_remote_get( 'https://www.cbr-xml-daily.ru/daily_json.js' )[ 'body' ] );
 			}
-			
+
 			return $rates;
 		}
 
@@ -236,7 +238,7 @@ License: GPL2
 		public function status( $old, $new )
 		{
 			$date = get_option( 'db_woo_converter_date' );
-			$now =  date("ymdH");
+			$now =  gmdate( "ymdH" );
 			$dif =  $now - $date; // the mail will be sent only after at least 24 hours of inaccessibility to the data from CBR
 
 			if ( $old !== $new && $dif > 24 )
