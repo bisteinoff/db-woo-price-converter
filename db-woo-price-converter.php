@@ -3,7 +3,7 @@
 Plugin Name: DB Woocommerce Price Converter
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.4
+Version: 1.4.1
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 Text Domain: db-woo-price-converter
@@ -41,14 +41,14 @@ License: GPL2
 
 			add_option( 'db_woo_converter_currency_from', 'USD' );
 			add_option( 'db_woo_converter_currency_to',   'RUR' );
-			add_option( 'db_woo_converter_date' 				); // the date when the exchange rates were uploaded from CBR
-			add_option( 'db_woo_converter_date_cbr' 			); // the date of update by CBR
-			add_option( 'db_woo_converter_rate_cbr' 			); // the exchange rate from CBR
-			add_option( 'db_woo_converter_rate',		  '1'	); // the exchange rate established manually
-			add_option( 'db_woo_converter_if_cbr'				); // if ON than the exchange rate established manually will be used, else use the exchange rate of CBR for calculations
-			add_option( 'db_woo_converter_margin',		  '0'	); // the amount will be added to the exchange rate
-			add_option( 'db_woo_converter_status',		  '1'	); // 0 - the data from CBR is not received, 1 - the data from CBR received
-			add_option( 'db_woo_converter_round',		  '0'	); // price rounding
+			add_option( 'db_woo_converter_date'                 ); // the date when the exchange rates were uploaded from CBR
+			add_option( 'db_woo_converter_date_cbr'             ); // the date of update by CBR
+			add_option( 'db_woo_converter_rate_cbr'             ); // the exchange rate from CBR
+			add_option( 'db_woo_converter_rate',          '1'   ); // the exchange rate established manually
+			add_option( 'db_woo_converter_if_cbr'               ); // if ON than the exchange rate established manually will be used, else use the exchange rate of CBR for calculations
+			add_option( 'db_woo_converter_margin',        '0'   ); // the amount will be added to the exchange rate
+			add_option( 'db_woo_converter_status',        '1'   ); // 0 - the data from CBR is not received, 1 - the data from CBR received
+			add_option( 'db_woo_converter_round',         '0'   ); // price rounding
 
 			add_filter( 'plugin_action_links_' . $this->thisdir() . '/db-woo-price-converter.php', array( &$this, 'db_settings_link' ) );
 			add_action( 'admin_menu', array( &$this, 'admin' ) );

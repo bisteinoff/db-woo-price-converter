@@ -6,49 +6,49 @@
 	$d = $db_converter->thisdir();
 
 	$currencies = array(
-		'USD' => array ( '$', 'Доллар США' ),
-		'EUR' => array ( '€', 'Евро' ),
-		'GBP' => array ( '£', 'Британский фунт стерлингов' ),
-		'CNY' => array ( '¥', 'Китайский юань' ),
-		'JPY' => array ( '¥', 'Японская иена' ),
-		'AUD' => array ( 'AUD', 'Австралийский доллар' ),
-		'AZN' => array ( 'AZN', 'Азербайджанский манат' ),
-		'AMD' => array ( 'AMD', 'Армянских драмов' ),
-		'BYN' => array ( 'BYN', 'Белорусский рубль' ),
-		'BGN' => array ( 'BGN', 'Болгарский лев' ),
-		'BRL' => array ( 'BRL', 'Бразильский реал' ),
-		'HUF' => array ( 'HUF', 'Венгерских форинтов' ),
-		'VND' => array ( 'VND', 'Вьетнамских донгов' ),
-		'HKD' => array ( 'HKD', 'Гонконгский доллар' ),
-		'GEL' => array ( 'GEL', 'Грузинский лари' ),
-		'DKK' => array ( 'DKK', 'Датская крона' ),
-		'AED' => array ( 'AED', 'Дирхам ОАЭ' ),
-		'EGP' => array ( 'EGP', 'Египетских фунтов' ),
-		'INR' => array ( 'INR', 'Индийских рупий' ),
-		'IDR' => array ( 'IDR', 'Индонезийских рупий' ),
-		'KZT' => array ( 'KZT', 'Казахстанских тенге' ),
-		'CAD' => array ( 'CAD', 'Канадский доллар' ),
-		'QAR' => array ( 'QAR', 'Катарский риал' ),
-		'KGS' => array ( 'KGS', 'Киргизских сомов' ),
-		'MDL' => array ( 'MDL', 'Молдавских леев' ),
-		'NZD' => array ( 'NZD', 'Новозеландский доллар' ),
-		'NOK' => array ( 'NOK', 'Норвежских крон' ),
-		'PLN' => array ( 'PLN', 'Польский злотый' ),
-		'RON' => array ( 'RON', 'Румынский лей' ),
-		'XDR' => array ( 'XDR', 'СДР' ),
-		'SGD' => array ( 'SGD', 'Сингапурский доллар' ),
-		'TJS' => array ( 'TJS', 'Таджикских сомони' ),
-		'THB' => array ( 'THB', 'Таиландских батов' ),
-		'TRY' => array ( 'TRY', 'Турецких лир' ),
-		'TMT' => array ( 'TMT', 'Новый туркменский манат' ),
-		'UZS' => array ( 'UZS', 'Узбекских сумов' ),
-		'UAH' => array ( 'UAH', 'Украинских гривен' ),
-		'CZK' => array ( 'CZK', 'Чешских крон' ),
-		'SEK' => array ( 'SEK', 'Шведских крон' ),
-		'CHF' => array ( 'CHF', 'Швейцарский франк' ),
-		'RSD' => array ( 'RSD', 'Сербских динаров' ),
-		'ZAR' => array ( 'ZAR', 'Южноафриканских рэндов' ),
-		'KRW' => array ( 'KRW', 'Вон Республики Корея' )
+		'USD' => array( '$',   esc_html__( 'US Dollar',          'db-woo-price-converter' ) ),
+		'EUR' => array( '€',   esc_html__( 'Euro',               'db-woo-price-converter' ) ),
+		'GBP' => array( '£',   esc_html__( 'British Pound',      'db-woo-price-converter' ) ),
+		'CNY' => array( '¥',   esc_html__( 'Chinese Yuan',       'db-woo-price-converter' ) ),
+		'JPY' => array( '¥',   esc_html__( 'Japanese Yen',       'db-woo-price-converter' ) ),
+		'AUD' => array( 'AUD', esc_html__( 'Australian Dollar',  'db-woo-price-converter' ) ),
+		'AZN' => array( 'AZN', esc_html__( 'Azerbaijani Manat',  'db-woo-price-converter' ) ),
+		'AMD' => array( 'AMD', esc_html__( 'Armenian Dram',      'db-woo-price-converter' ) ),
+		'BYN' => array( 'BYN', esc_html__( 'Belarusian Ruble',   'db-woo-price-converter' ) ),
+		'BGN' => array( 'BGN', esc_html__( 'Bulgarian Lev',      'db-woo-price-converter' ) ),
+		'BRL' => array( 'BRL', esc_html__( 'Brazilian Real',     'db-woo-price-converter' ) ),
+		'HUF' => array( 'HUF', esc_html__( 'Hungarian Forint',   'db-woo-price-converter' ) ),
+		'VND' => array( 'VND', esc_html__( 'Vietnamese Dong',    'db-woo-price-converter' ) ),
+		'HKD' => array( 'HKD', esc_html__( 'Hong Kong Dollar',   'db-woo-price-converter' ) ),
+		'GEL' => array( 'GEL', esc_html__( 'Georgian Lari',      'db-woo-price-converter' ) ),
+		'DKK' => array( 'DKK', esc_html__( 'Danish Krone',       'db-woo-price-converter' ) ),
+		'AED' => array( 'AED', esc_html__( 'UAE Dirham',         'db-woo-price-converter' ) ),
+		'EGP' => array( 'EGP', esc_html__( 'Egyptian Pound',     'db-woo-price-converter' ) ),
+		'INR' => array( 'INR', esc_html__( 'Indian Rupee',       'db-woo-price-converter' ) ),
+		'IDR' => array( 'IDR', esc_html__( 'Indonesian Rupiah',  'db-woo-price-converter' ) ),
+		'KZT' => array( 'KZT', esc_html__( 'Kazakhstan Tenge',   'db-woo-price-converter' ) ),
+		'CAD' => array( 'CAD', esc_html__( 'Canadian Dollar',    'db-woo-price-converter' ) ),
+		'QAR' => array( 'QAR', esc_html__( 'Qatari Rial',        'db-woo-price-converter' ) ),
+		'KGS' => array( 'KGS', esc_html__( 'Kyrgyz Som',         'db-woo-price-converter' ) ),
+		'MDL' => array( 'MDL', esc_html__( 'Moldovan Lei',       'db-woo-price-converter' ) ),
+		'NZD' => array( 'NZD', esc_html__( 'New Zealand Dollar', 'db-woo-price-converter' ) ),
+		'NOK' => array( 'NOK', esc_html__( 'Norwegian Kroner',   'db-woo-price-converter' ) ),
+		'PLN' => array( 'PLN', esc_html__( 'Polish Zloty',       'db-woo-price-converter' ) ),
+		'RON' => array( 'RON', esc_html__( 'Romanian Leu',       'db-woo-price-converter' ) ),
+		'XDR' => array( 'XDR', esc_html__( 'XDR',                'db-woo-price-converter' ) ),
+		'SGD' => array( 'SGD', esc_html__( 'Singapore Dollar',   'db-woo-price-converter' ) ),
+		'TJS' => array( 'TJS', esc_html__( 'Tajik Somoni',       'db-woo-price-converter' ) ),
+		'THB' => array( 'THB', esc_html__( 'Thai Baht',          'db-woo-price-converter' ) ),
+		'TRY' => array( 'TRY', esc_html__( 'Turkish Lira',       'db-woo-price-converter' ) ),
+		'TMT' => array( 'TMT', esc_html__( 'New Turkmen Manat',  'db-woo-price-converter' ) ),
+		'UZS' => array( 'UZS', esc_html__( 'Uzbek Soum',         'db-woo-price-converter' ) ),
+		'UAH' => array( 'UAH', esc_html__( 'Ukrainian Hryvnia',  'db-woo-price-converter' ) ),
+		'CZK' => array( 'CZK', esc_html__( 'Czech Crown',        'db-woo-price-converter' ) ),
+		'SEK' => array( 'SEK', esc_html__( 'Swedish Kronor',     'db-woo-price-converter' ) ),
+		'CHF' => array( 'CHF', esc_html__( 'Swiss Frank',        'db-woo-price-converter' ) ),
+		'RSD' => array( 'RSD', esc_html__( 'Serbian Dinar',      'db-woo-price-converter' ) ),
+		'ZAR' => array( 'ZAR', esc_html__( 'South African Rand', 'db-woo-price-converter' ) ),
+		'KRW' => array( 'KRW', esc_html__( 'South Korean Won',   'db-woo-price-converter' ) )
 	);
 
 	$currency_from	=			esc_html( sanitize_text_field( get_option( 'db_woo_converter_currency_from' ) ) );
@@ -64,7 +64,7 @@
 
 
 	// form submit
-	if ( isset ( $_POST['submit'] ) && 
+	if ( isset ( $_POST[ 'submit' ] ) && 
 	isset( $_POST[ $d . '_nonce' ] ) &&
 	wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $d . '_nonce' ] ) ), sanitize_text_field( $d ) ) )
 	{
@@ -76,53 +76,53 @@
 		if ( $_POST['currency_from'] !== $currency_from || $_POST['currency_to'] !== $currency_to ) $if_change = true;
 
 		// Currency from
-		if ( !empty ( $_POST['currency_from'] ) )
+		if ( !empty ( $_POST[ 'currency_from' ] ) )
 		{
-			$currency_from = sanitize_text_field( $_POST['currency_from'] );
-			update_option ( 'db_woo_converter_currency_from', $currency_from );
+			$currency_from = esc_html( sanitize_text_field( $_POST[ 'currency_from' ] ) );
+			update_option( 'db_woo_converter_currency_from', $currency_from );
 		}
 		else
-			update_option ( 'db_woo_converter_currency_from', 'USD' );
+			update_option( 'db_woo_converter_currency_from', 'USD' );
 
 		// Currency to
-		if ( !empty ( $_POST['currency_to'] ) )
+		if ( !empty ( $_POST[ 'currency_to' ] ) )
 		{
-			$currency_to = sanitize_text_field( $_POST['currency_to'] );
-			update_option ( 'db_woo_converter_currency_to', $currency_to );
+			$currency_to = esc_html( sanitize_text_field( $_POST[ 'currency_to' ] ) );
+			update_option( 'db_woo_converter_currency_to', $currency_to );
 		}
 		else
-			update_option ( 'db_woo_converter_currency_to', 'RUR' );
+			update_option( 'db_woo_converter_currency_to', 'RUR' );
 
 		// Enable Exchange Rate of CBR
-		$if_cbr = sanitize_text_field( $_POST['if_cbr'] );
-		update_option ( 'db_woo_converter_if_cbr', $if_cbr );
+		$if_cbr = esc_html( sanitize_text_field( $_POST[ 'if_cbr' ] ) );
+		update_option( 'db_woo_converter_if_cbr', $if_cbr );
 
 		// Custom Exchange Rate
-		if ( !empty ( $_POST['rate'] ) )
+		if ( !empty ( $_POST[ 'rate' ] ) )
 		{
-			$rate = (float) $_POST['rate'];
-			update_option ( 'db_woo_converter_rate', round ( $rate, 2 ) );
+			$rate = (float) esc_html( sanitize_text_field( $_POST[ 'rate' ] ) );
+			update_option( 'db_woo_converter_rate', round ( $rate, 2 ) );
 		}
 		else
-			update_option ( 'db_woo_converter_rate', '1' );
+			update_option( 'db_woo_converter_rate', '1' );
 
 		// Margin
-		if ( !empty ( $_POST['margin'] ) )
+		if ( !empty ( $_POST[ 'margin' ] ) )
 		{
-			$margin = (float) $_POST['margin'];
-			update_option ( 'db_woo_converter_margin', round ( $margin, 2 ) );
+			$margin = (float) esc_html( sanitize_text_field( $_POST[ 'margin' ] ) );
+			update_option( 'db_woo_converter_margin', round ( $margin, 2 ) );
 		}
 		else
-			update_option ( 'db_woo_converter_margin', '0' );
+			update_option( 'db_woo_converter_margin', '0' );
 
 		// Rounding
-		if ( !empty ( $_POST['round'] ) )
+		if ( !empty ( $_POST[ 'round' ] ) )
 		{
-			$round = (int) $_POST['round'];
-			update_option ( 'db_woo_converter_round', $round );
+			$round = (int) esc_html( sanitize_text_field( $_POST[ 'round' ] ) );
+			update_option( 'db_woo_converter_round', $round );
 		}
 		else
-			update_option ( 'db_woo_converter_round', '0' );
+			update_option( 'db_woo_converter_round', '0' );
 
 	}
 
