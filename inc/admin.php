@@ -2,8 +2,8 @@
 
 	if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-	$db_converter = new dbWooConverter();
-	$d = $db_converter -> thisdir(); // domain for translate.wordpress.org
+	$db_converter = new DB_WOO_CONVERTER_Init();
+	$d = $db_converter->thisdir();
 
 	$currencies = array(
 		'USD' => array ( '$', 'Доллар США' ),
@@ -51,34 +51,34 @@
 		'KRW' => array ( 'KRW', 'Вон Республики Корея' )
 	);
 
-	$currency_from = sanitize_text_field ( get_option( 'db_woo_converter_currency_from' ) );
-	$currency_to = sanitize_text_field ( get_option( 'db_woo_converter_currency_to' ) );
-	$date =  sanitize_text_field ( get_option( 'db_woo_converter_date' ) );
-	$date_cbr =  sanitize_text_field ( get_option( 'db_woo_converter_date_cbr' ) );
-	$rate_cbr = (float) get_option( 'db_woo_converter_rate_cbr' );
-	$rate = (float) get_option( 'db_woo_converter_rate' );
-	$if_cbr = sanitize_text_field ( get_option( 'db_woo_converter_if_cbr' ) );
-	$margin = (float) get_option( 'db_woo_converter_margin' );
-	$round = (int) get_option( 'db_woo_converter_round' );
-	$if_change = false; // if the currency has changed it is true
+	$currency_from	=			esc_html( sanitize_text_field( get_option( 'db_woo_converter_currency_from' ) ) );
+	$currency_to	=			esc_html( sanitize_text_field( get_option( 'db_woo_converter_currency_to'	) ) );
+	$date			=			esc_html( sanitize_text_field( get_option( 'db_woo_converter_date'			) ) );
+	$date_cbr		=			esc_html( sanitize_text_field( get_option( 'db_woo_converter_date_cbr'		) ) );
+	$rate_cbr		= (float)	esc_html( sanitize_text_field( get_option( 'db_woo_converter_rate_cbr'		) ) );
+	$rate			= (float)	esc_html( sanitize_text_field( get_option( 'db_woo_converter_rate'			) ) );
+	$if_cbr			=			esc_html( sanitize_text_field( get_option( 'db_woo_converter_if_cbr'		) ) );
+	$margin			= (float)	esc_html( sanitize_text_field( get_option( 'db_woo_converter_margin'		) ) );
+	$round			= (int)		esc_html( sanitize_text_field( get_option( 'db_woo_converter_round'			) ) );
+	$if_change		= false; // if the currency has changed it is true
 
 
-	if ( isset ( $_POST['submit'] ) )
+	// form submit
+	if ( isset ( $_POST['submit'] ) && 
+	isset( $_POST[ $d . '_nonce' ] ) &&
+	wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $d . '_nonce' ] ) ), sanitize_text_field( $d ) ) )
 	{
 
-		if ( function_exists('current_user_can') &&
-			 !current_user_can('manage_options') )
-				die( _e( "Error: You do not have the permission to update the value" , $d ) );
-
-		if ( function_exists('check_admin_referrer') )
-			check_admin_referrer( $d . '_form' );
+		if ( function_exists( 'current_user_can' ) &&
+			 !current_user_can( 'manage_options' ) )
+				die( esc_html_e( 'Error: You do not have the permission to update the value', 'db-woo-price-converter' ) );
 
 		if ( $_POST['currency_from'] !== $currency_from || $_POST['currency_to'] !== $currency_to ) $if_change = true;
 
 		// Currency from
 		if ( !empty ( $_POST['currency_from'] ) )
 		{
-			$currency_from = sanitize_text_field ( $_POST['currency_from'] );
+			$currency_from = sanitize_text_field( $_POST['currency_from'] );
 			update_option ( 'db_woo_converter_currency_from', $currency_from );
 		}
 		else
@@ -87,14 +87,14 @@
 		// Currency to
 		if ( !empty ( $_POST['currency_to'] ) )
 		{
-			$currency_to = sanitize_text_field ( $_POST['currency_to'] );
+			$currency_to = sanitize_text_field( $_POST['currency_to'] );
 			update_option ( 'db_woo_converter_currency_to', $currency_to );
 		}
 		else
 			update_option ( 'db_woo_converter_currency_to', 'RUR' );
 
 		// Enable Exchange Rate of CBR
-		$if_cbr = sanitize_text_field ( $_POST['if_cbr'] );
+		$if_cbr = sanitize_text_field( $_POST['if_cbr'] );
 		update_option ( 'db_woo_converter_if_cbr', $if_cbr );
 
 		// Custom Exchange Rate
@@ -127,50 +127,45 @@
 	}
 
 
-	$now = date("ymdH");
+	$now = date( "ymdH" );
 
 	if ( $date < $now - 3 || $if_change === true )
 	{
-		$db_converter -> currency( $currency_from, $now );
-		$date_cbr =  sanitize_text_field ( get_option( 'db_woo_converter_date_cbr' ) );
+		$db_converter->currency( $currency_from, $now );
+		$date_cbr = sanitize_text_field( get_option( 'db_woo_converter_date_cbr' ) );
 		$rate_cbr = (float) get_option( 'db_woo_converter_rate_cbr' );
 	}
 
 ?>
 <div class='wrap db-woo-converter-admin'>
 
-	<h1><?php _e("DB Woocommerce Price Converter", $d ) ?></h1>
+	<h1><?php esc_html_e( 'DB Woocommerce Price Converter', 'db-woo-price-converter' ) ?></h1>
 
 	<div class="db-woo-converter-description">
-		<p><?php _e("The plugin is used for converting the prices from one currency to another", $d ) ?></p>
+		<p><?php esc_html_e( 'The plugin is used for converting the prices from one currency to another', 'db-woo-price-converter' ) ?></p>
 	</div>
 
-	<h2><?php _e( "Settings", $d ) ?></h2>
+	<h2><?php esc_html_e( 'Settings', 'db-woo-price-converter' ) ?></h2>
 
 	<form name="db-woo-converter" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $d; ?>&amp;updated=true">
-
-		<?php
-			if (function_exists ( 'wp_nonce_field' ) )
-				wp_nonce_field( $d . '_form' );
-		?>
 
 		<table class="form-table db-woo-converter-table" width="100%">
 			<tr valign="top">
 				<th scope="col" width="25%">
-					<?php _e("Parameter", $d ) ?>
+					<?php esc_html_e( 'Parameter', 'db-woo-price-converter' ) ?>
 				</th>
 				<th scope="col" width="25%">
-					<?php _e("Value", $d ) ?>
+					<?php esc_html_e( 'Value', 'db-woo-price-converter' ) ?>
 				</th>
 				<th scope="col" width="50%">
-					<?php _e("Current Exchange Rate", $d) ?>
+					<?php esc_html_e( 'Current Exchange Rate', 'db-woo-price-converter' ) ?>
 				</th>
 			</tr>
 			<tr valign="top">
 				<th scope="row">
-					<?php _e( "Convert from", $d ) ?>
+					<?php esc_html_e( 'Convert from', 'db-woo-price-converter' ) ?>
 					<div class="db-woo-converter-field-description">
-						<?php _e( "The currency of the prices in WooCommerce", $d ) ?>
+						<?php esc_html_e( 'The currency of the prices in WooCommerce', 'db-woo-price-converter' ) ?>
 					</div>
 				</th>
 				<td>
@@ -188,31 +183,31 @@
 				</td>
 				<td rowspan="2">
 					<div class="db-woo-converter-rate-cbr">
-						<?php _e( "Exchange Rate of CBR", $d ) ?>: <span><?php echo $rate_cbr; ?></span>
+						<?php esc_html_e( 'Exchange Rate of CBR', 'db-woo-price-converter' ) ?>: <span><?php echo $rate_cbr; ?></span>
 					</div>
 					<div class="db-woo-converter-date-cbr">
-						<?php _e( "Date", $d ) ?>: <span><?php echo $date_cbr; ?></span>
+						<?php esc_html_e( 'Date', 'db-woo-price-converter' ) ?>: <span><?php echo $date_cbr; ?></span>
 					</div>
 				</td>
 			</tr>
 			<tr valign="top">
 				<th scope="row">
-					<?php _e( "Convert to", $d ) ?>
+					<?php esc_html_e( 'Convert to', 'db-woo-price-converter' ) ?>
 					<div class="db-woo-converter-field-description">
-						<?php _e( "The currency of the prices shown on the website", $d ) ?>
+						<?php esc_html_e( 'The currency of the prices shown on the website', 'db-woo-price-converter' ) ?>
 					</div>
 				</th>
 				<td>
 					<select type="text" name="currency_to" id="db_woo_converter_currency_to">
-						<option value="RUR" <?php selected( $currency_to, 'RUR' ); ?>>₽ - <?php _e( 'Russian Ruble' , $d ) ?></option>
+						<option value="RUR" <?php selected( $currency_to, 'RUR' ); ?>>₽ - <?php esc_html_e( 'Russian Ruble' , 'db-woo-price-converter' ) ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr valign="top">
 				<th scope="row">
-					<?php _e( "Custom Exchange Rate", $d ) ?>
+					<?php esc_html_e( 'Custom Exchange Rate', 'db-woo-price-converter' ) ?>
 					<div class="db-woo-converter-field-description">
-						<?php _e( "You can set your custom exchange rate", $d ) ?>
+						<?php esc_html_e( 'You can set your custom exchange rate', 'db-woo-price-converter' ) ?>
 					</div>
 				</th>
 				<td>
@@ -223,12 +218,12 @@
 					<p>
 						<input type="checkbox" name="if_cbr" id="db_woo_converter_if_cbr"
 							<?php if ( $if_cbr === 'on') { ?>checked<?php } ?> />
-						<label for="db_woo_converter_if_cbr"><?php _e( "Enable", $d ) ?></label>
+						<label for="db_woo_converter_if_cbr"><?php esc_html_e( 'Enable', 'db-woo-price-converter' ) ?></label>
 					</p>
 				</td>
 				<td rowspan="3">
 					<div class="db-woo-converter-rate-website">
-						<?php _e( "Exchange Rate On Your Website", $d ) ?>: <span><?php
+						<?php esc_html_e( 'Exchange Rate On Your Website', 'db-woo-price-converter' ) ?>: <span><?php
 							echo ( $if_cbr === 'on' ? $rate + $margin : $rate_cbr + $margin );
 						?></span>
 					</div>
@@ -236,9 +231,9 @@
 			</tr>
 			<tr valign="top">
 				<th scope="row">
-					<?php _e( "Margin", $d ) ?>
+					<?php esc_html_e( 'Margin', 'db-woo-price-converter' ) ?>
 					<div class="db-woo-converter-field-description">
-						<?php _e( "You can set a margin. It will be added to the amount of your exchange rate", $d ) ?>
+						<?php esc_html_e( 'You can set a margin. It will be added to the amount of your exchange rate', 'db-woo-price-converter' ) ?>
 					</div>
 				</th>
 				<td>
@@ -248,9 +243,9 @@
 			</tr>
 			<tr valign="top">
 				<th scope="row">
-					<?php _e( "Rounding", $d ) ?>
+					<?php esc_html_e( 'Rounding', 'db-woo-price-converter' ) ?>
 					<div class="db-woo-converter-field-description">
-						<?php _e( "You can set the way the prices will be rounded", $d ) ?>
+						<?php esc_html_e( 'You can set the way the prices will be rounded', 'db-woo-price-converter' ) ?>
 					</div>
 				</th>
 				<td>
@@ -269,7 +264,7 @@
 						<option value="11" <?php selected( $round, '11' ); ?>>999</option>
 					</select>
 					<div class="db-woo-converter-field-description">
-						<?php _e( "Choose the example, how 1&nbsp;234.56 should be rounded", $d ) ?>
+						<?php esc_html_e( 'Choose the example, how 1&nbsp;234.56 should be rounded', 'db-woo-price-converter' ) ?>
 					</div>
 				</td>
 			</tr>
@@ -277,7 +272,9 @@
 
 		<input type="hidden" name="action" value="update" />
 
-		<input type="hidden" name="page_options" value="db_woo_converter_cols" />
+		<?php $nonce = wp_create_nonce( $d ); ?>
+
+		<input type="hidden" name="<?php echo esc_html( sanitize_text_field( $d ) ) ?>_nonce" value="<?php echo esc_html( sanitize_text_field( $nonce ) ) ?>" />
 
 		<?php submit_button(); ?>
 
