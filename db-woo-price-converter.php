@@ -52,7 +52,7 @@ License: GPL2
 			add_option( 'db_woo_converter_status',        '1'   ); // 0 - the data from CBR is not received, 1 - the data from CBR received
 			add_option( 'db_woo_converter_round',         '0'   ); // price rounding
 
-			add_filter( 'plugin_action_links_' . $this->thisdir() . '/db-price-converter-woocommerce.php', array( &$this, 'db_settings_link' ) );
+			add_filter( 'plugin_action_links_' . $this->thisdir() . '/db-woo-price-converter.php', array( &$this, 'db_settings_link' ) );
 			add_action( 'admin_menu', array( &$this, 'admin' ) );
 
 			add_action( 'admin_footer', function() {
