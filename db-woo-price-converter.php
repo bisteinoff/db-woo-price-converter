@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: DB Woo Price Converter for Woocommerce
-Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
+Plugin Name: DB Price Converter for WooCommerce
+Plugin URI: https://github.com/bisteinoff/db-price-converter-woocommerce
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.5
+Version: 1.5.1
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
-Text Domain: db-woo-price-converter
+Text Domain: db-price-converter-woocommerce
 License: GPL2
 */
 
@@ -52,7 +52,7 @@ License: GPL2
 			add_option( 'db_woo_converter_status',        '1'   ); // 0 - the data from CBR is not received, 1 - the data from CBR received
 			add_option( 'db_woo_converter_round',         '0'   ); // price rounding
 
-			add_filter( 'plugin_action_links_' . $this->thisdir() . '/db-woo-price-converter.php', array( &$this, 'db_settings_link' ) );
+			add_filter( 'plugin_action_links_' . $this->thisdir() . '/db-price-converter-woocommerce.php', array( &$this, 'db_settings_link' ) );
 			add_action( 'admin_menu', array( &$this, 'admin' ) );
 
 			add_action( 'admin_footer', function() {
@@ -86,8 +86,8 @@ License: GPL2
 				$icon = $svg->saveHTML( $svg->getElementsByTagName('svg')[0] );
 
 				add_menu_page(
-					esc_html__( 'DB Woocommerce Price Converter', 'db-woo-price-converter' ),
-					esc_html__( 'Price Converter', 'db-woo-price-converter' ),
+					esc_html__( 'DB Woocommerce Price Converter', 'db-price-converter-woocommerce' ),
+					esc_html__( 'Price Converter', 'db-price-converter-woocommerce' ),
 					'manage_options',
 					$this->thisdir(),
 					array( &$this, 'admin_page_callback' ),
@@ -265,32 +265,32 @@ License: GPL2
 					case 'fixed' :
 
 						$email['subject'] = 
-							esc_html__( 'Problem fixed', 'db-woo-price-converter' ) . ": " .
-							esc_html__( 'The data from CBR is received', 'db-woo-price-converter' ) . " | " .
+							esc_html__( 'Problem fixed', 'db-price-converter-woocommerce' ) . ": " .
+							esc_html__( 'The data from CBR is received', 'db-price-converter-woocommerce' ) . " | " .
 							$site_url;
 
 						$email['message'] = 
-							"<h2>" . esc_html__( 'DB Woocommerce Price Converter', 'db-woo-price-converter' ) . "</h2>" .
-							"<p><strong>" . esc_html__( 'The data from the CBR is received', 'db-woo-price-converter' ) . ". " .
-							esc_html__( 'The problem was fixed', 'db-woo-price-converter' ) . ".</strong></p> " .
-							"<p>" . esc_html__( 'Now you can use the exchange rate from CBR for converting the prices again', 'db-woo-price-converter' ) . ".</p>";
+							"<h2>" . esc_html__( 'DB Woocommerce Price Converter', 'db-price-converter-woocommerce' ) . "</h2>" .
+							"<p><strong>" . esc_html__( 'The data from the CBR is received', 'db-price-converter-woocommerce' ) . ". " .
+							esc_html__( 'The problem was fixed', 'db-price-converter-woocommerce' ) . ".</strong></p> " .
+							"<p>" . esc_html__( 'Now you can use the exchange rate from CBR for converting the prices again', 'db-price-converter-woocommerce' ) . ".</p>";
 
 						break;
 
 					case 'error' :
 
 						$email['subject'] = 
-							esc_html__( 'Error', 'db-woo-price-converter' ) . ": " .
-							esc_html__( 'The data from CBR is inaccessible for more than 24 hours', 'db-woo-price-converter' ) . " | " .
+							esc_html__( 'Error', 'db-price-converter-woocommerce' ) . ": " .
+							esc_html__( 'The data from CBR is inaccessible for more than 24 hours', 'db-price-converter-woocommerce' ) . " | " .
 							$site_url;
 
 						$email['message'] = 
-							"<h2>" . esc_html__( 'DB Woocommerce Price Converter', 'db-woo-price-converter' ) . "</h2>" .
-							"<p><strong>" . esc_html__( 'The API of CBR used in the plugin does not work correctly any longer', 'db-woo-price-converter' ) . ".</strong></p> " .
-							"<p>" . esc_html__( 'If the problem is fixed by CBR you will get another message from us', 'db-woo-price-converter' ) . ".</p>" .
-							"<p>" . esc_html__( 'The latest exchange rate is fixed in the database', 'db-woo-price-converter' ) . ". " .
-							esc_html__( 'You can still use it or change it to your own custom exchange rate', 'db-woo-price-converter' ) . ".</p>" .
-							"<p>" . esc_html__( 'You can also contact us and ask to fix the problem', 'db-woo-price-converter' ) . 
+							"<h2>" . esc_html__( 'DB Woocommerce Price Converter', 'db-price-converter-woocommerce' ) . "</h2>" .
+							"<p><strong>" . esc_html__( 'The API of CBR used in the plugin does not work correctly any longer', 'db-price-converter-woocommerce' ) . ".</strong></p> " .
+							"<p>" . esc_html__( 'If the problem is fixed by CBR you will get another message from us', 'db-price-converter-woocommerce' ) . ".</p>" .
+							"<p>" . esc_html__( 'The latest exchange rate is fixed in the database', 'db-price-converter-woocommerce' ) . ". " .
+							esc_html__( 'You can still use it or change it to your own custom exchange rate', 'db-price-converter-woocommerce' ) . ".</p>" .
+							"<p>" . esc_html__( 'You can also contact us and ask to fix the problem', 'db-price-converter-woocommerce' ) . 
 							": <a href='mailto:bisteinoff@gmail.com'>bisteinoff@gmail.com</a>.</p>";
 
 						break;
@@ -303,7 +303,7 @@ License: GPL2
 					$email[ 'from' ] 	 = 'no-reply@' . $site_url;
 					$email[ 'message' ] .=
 						"<hr />" .
-						"<p>" . esc_html__( 'Denis BISTEINOV', 'db-woo-price-converter' ) . "<br />" . 
+						"<p>" . esc_html__( 'Denis BISTEINOV', 'db-price-converter-woocommerce' ) . "<br />" . 
 						"<a href='https://bisteinoff.com' target='_blank'>bisteinoff.com</a></p>";
 
 					$headers[] = 'MIME-Version: 1.0';

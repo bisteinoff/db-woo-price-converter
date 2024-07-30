@@ -1,10 +1,10 @@
-=== DB Woo Price Converter for Woocommerce ===
+=== DB Price Converter for WooCommerce ===
 Contributors: bisteinoff
 Donate link: https://bisteinoff.com
 Tags: woocommerce, price, converter, currency, exchange rate
 Requires at least: 4.6
 Tested up to: 6.5
-Stable tag: 1.5
+Stable tag: 1.5.1
 License: GPL2
 
 The plugin is used for converting the prices from one currency to another.
