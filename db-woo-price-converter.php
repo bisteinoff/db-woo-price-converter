@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: DB Price Converter for WooCommerce
-Plugin URI: https://github.com/bisteinoff/db-price-converter-woocommerce
+Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.5.1
+Version: 1.6
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 Text Domain: db-price-converter-woocommerce
@@ -28,7 +28,7 @@ License: GPL2
 
 	if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-	define( 'DB_WOO_CONVERTER_PLUGIN_VERSION', '1.5' );
+	define( 'DB_WOO_CONVERTER_PLUGIN_VERSION', '1.6' );
 
 	class DB_WOO_CONVERTER_Init
 	{
@@ -43,11 +43,11 @@ License: GPL2
 
 			add_option( 'db_woo_converter_currency_from', 'USD' );
 			add_option( 'db_woo_converter_currency_to',   'RUR' );
-			add_option( 'db_woo_converter_date'                 ); // the date when the exchange rates were uploaded from CBR
-			add_option( 'db_woo_converter_date_cbr'             ); // the date of update by CBR
-			add_option( 'db_woo_converter_rate_cbr'             ); // the exchange rate from CBR
+			add_option( 'db_woo_converter_date',     '24010101' ); // the date when the exchange rates were uploaded from CBR
+			add_option( 'db_woo_converter_date_cbr', '2023-01-01T00:00:00+03:00' ); // the date of update by CBR
+			add_option( 'db_woo_converter_rate_cbr',      '1'   ); // the exchange rate from CBR
 			add_option( 'db_woo_converter_rate',          '1'   ); // the exchange rate established manually
-			add_option( 'db_woo_converter_if_cbr'               ); // if ON than the exchange rate established manually will be used, else use the exchange rate of CBR for calculations
+			add_option( 'db_woo_converter_if_cbr',        ''    ); // if ON than the exchange rate established manually will be used, else use the exchange rate of CBR for calculations
 			add_option( 'db_woo_converter_margin',        '0'   ); // the amount will be added to the exchange rate
 			add_option( 'db_woo_converter_status',        '1'   ); // 0 - the data from CBR is not received, 1 - the data from CBR received
 			add_option( 'db_woo_converter_round',         '0'   ); // price rounding
@@ -132,7 +132,7 @@ License: GPL2
 			static $rates;
 			
 			if ( $rates === null ) {
-				$rates = json_decode( wp_remote_get( 'https://www.cbr-xml-daily.ru/daily_json.js' )[ 'body' ] );
+				$rates = json_decode( file_get_contents( 'https://www.cbr-xml-daily.ru/daily_json.js' ) );
 			}
 
 			return $rates;
@@ -144,10 +144,10 @@ License: GPL2
 			$count = count( (array)$data );
 			$status_old = (int) get_option( 'db_woo_converter_status' );
 
-			if ( !empty($data) && $count > 0 )
+			if ( !empty( $data ) && $count > 0 )
 			{
 				$date_cbr = esc_html( sanitize_text_field( $data->Date ) );
-				$rate_cbr = (float) $data->Valute->$currency->Value;
+				echo $rate_cbr = (float) $data->Valute->$currency->Value;
 
 				if ( !empty( $date_cbr ) && $rate_cbr > 0 )
 				{

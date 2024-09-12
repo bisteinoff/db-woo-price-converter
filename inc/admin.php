@@ -2,6 +2,26 @@
 
 	if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+	if ( ! defined( 'WC_VERSION' ) || ! class_exists( 'WooCommerce' ) ) :
+
+		?>
+
+<div class='wrap db-woo-converter-admin'>
+
+	<h1><?php esc_html_e( 'DB Woocommerce Price Converter', 'db-price-converter-woocommerce' ) ?></h1>
+
+	<h2>
+		<?php esc_html_e( 'Error', 'db-price-converter-woocommerce' ) ?>:
+		<?php esc_html_e( 'WooCommerce is not installed.', 'db-price-converter-woocommerce' ) ?>
+	</h2>
+	<p><?php esc_html_e( 'This plugin works only with WooCommerce.', 'db-price-converter-woocommerce' ) ?></p>
+	<p><?php esc_html_e( 'Please, install WooCommerce first.', 'db-price-converter-woocommerce' ) ?></p>
+
+</div>
+		<?php
+
+	else:
+
 	$db_converter = new DB_WOO_CONVERTER_Init();
 	$d = $db_converter->thisdir();
 
@@ -94,8 +114,15 @@
 			update_option( 'db_woo_converter_currency_to', 'RUR' );
 
 		// Enable Exchange Rate of CBR
-		$if_cbr = esc_html( sanitize_text_field( $_POST[ 'if_cbr' ] ) );
-		update_option( 'db_woo_converter_if_cbr', $if_cbr );
+		if ( !empty ( $_POST[ 'if_cbr' ] ) )
+		{
+			$if_cbr = esc_html( sanitize_text_field( $_POST[ 'if_cbr' ] ) );
+			update_option( 'db_woo_converter_if_cbr', $if_cbr );
+		}
+		else
+		{
+			update_option( 'db_woo_converter_if_cbr', '' );
+		}
 
 		// Custom Exchange Rate
 		if ( !empty ( $_POST[ 'rate' ] ) )
@@ -284,3 +311,7 @@
 	</form>
 
 </div>
+
+<?php
+
+	endif;
