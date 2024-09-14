@@ -31,44 +31,45 @@
 		'GBP' => array( '£',   esc_html__( 'British Pound',      'db-price-converter-woocommerce' ) ),
 		'CNY' => array( '¥',   esc_html__( 'Chinese Yuan',       'db-price-converter-woocommerce' ) ),
 		'JPY' => array( '¥',   esc_html__( 'Japanese Yen',       'db-price-converter-woocommerce' ) ),
-		'AUD' => array( 'AUD', esc_html__( 'Australian Dollar',  'db-price-converter-woocommerce' ) ),
-		'AZN' => array( 'AZN', esc_html__( 'Azerbaijani Manat',  'db-price-converter-woocommerce' ) ),
-		'AMD' => array( 'AMD', esc_html__( 'Armenian Dram',      'db-price-converter-woocommerce' ) ),
-		'BYN' => array( 'BYN', esc_html__( 'Belarusian Ruble',   'db-price-converter-woocommerce' ) ),
-		'BGN' => array( 'BGN', esc_html__( 'Bulgarian Lev',      'db-price-converter-woocommerce' ) ),
-		'BRL' => array( 'BRL', esc_html__( 'Brazilian Real',     'db-price-converter-woocommerce' ) ),
-		'HUF' => array( 'HUF', esc_html__( 'Hungarian Forint',   'db-price-converter-woocommerce' ) ),
-		'VND' => array( 'VND', esc_html__( 'Vietnamese Dong',    'db-price-converter-woocommerce' ) ),
-		'HKD' => array( 'HKD', esc_html__( 'Hong Kong Dollar',   'db-price-converter-woocommerce' ) ),
-		'GEL' => array( 'GEL', esc_html__( 'Georgian Lari',      'db-price-converter-woocommerce' ) ),
-		'DKK' => array( 'DKK', esc_html__( 'Danish Krone',       'db-price-converter-woocommerce' ) ),
-		'AED' => array( 'AED', esc_html__( 'UAE Dirham',         'db-price-converter-woocommerce' ) ),
-		'EGP' => array( 'EGP', esc_html__( 'Egyptian Pound',     'db-price-converter-woocommerce' ) ),
-		'INR' => array( 'INR', esc_html__( 'Indian Rupee',       'db-price-converter-woocommerce' ) ),
-		'IDR' => array( 'IDR', esc_html__( 'Indonesian Rupiah',  'db-price-converter-woocommerce' ) ),
-		'KZT' => array( 'KZT', esc_html__( 'Kazakhstan Tenge',   'db-price-converter-woocommerce' ) ),
-		'CAD' => array( 'CAD', esc_html__( 'Canadian Dollar',    'db-price-converter-woocommerce' ) ),
-		'QAR' => array( 'QAR', esc_html__( 'Qatari Rial',        'db-price-converter-woocommerce' ) ),
-		'KGS' => array( 'KGS', esc_html__( 'Kyrgyz Som',         'db-price-converter-woocommerce' ) ),
-		'MDL' => array( 'MDL', esc_html__( 'Moldovan Lei',       'db-price-converter-woocommerce' ) ),
-		'NZD' => array( 'NZD', esc_html__( 'New Zealand Dollar', 'db-price-converter-woocommerce' ) ),
-		'NOK' => array( 'NOK', esc_html__( 'Norwegian Kroner',   'db-price-converter-woocommerce' ) ),
-		'PLN' => array( 'PLN', esc_html__( 'Polish Zloty',       'db-price-converter-woocommerce' ) ),
-		'RON' => array( 'RON', esc_html__( 'Romanian Leu',       'db-price-converter-woocommerce' ) ),
+		'AED' => array( 'د',   esc_html__( 'UAE Dirham',         'db-price-converter-woocommerce' ) ),
+		'AMD' => array( '֏',   esc_html__( 'Armenian Dram',      'db-price-converter-woocommerce' ) ),
+		'AUD' => array( 'A$',  esc_html__( 'Australian Dollar',  'db-price-converter-woocommerce' ) ),
+		'AZN' => array( '₼',   esc_html__( 'Azerbaijani Manat',  'db-price-converter-woocommerce' ) ),
+		'BGN' => array( 'лв.', esc_html__( 'Bulgarian Lev',      'db-price-converter-woocommerce' ) ),
+		'BRL' => array( 'R$',  esc_html__( 'Brazilian Real',     'db-price-converter-woocommerce' ) ),
+		'BYN' => array( 'Br',  esc_html__( 'Belarusian Ruble',   'db-price-converter-woocommerce' ) ),
+		'CAD' => array( 'CA$', esc_html__( 'Canadian Dollar',    'db-price-converter-woocommerce' ) ),
+		'CHF' => array( 'Fr.', esc_html__( 'Swiss Frank',        'db-price-converter-woocommerce' ) ),
+		'CZK' => array( 'Kč',  esc_html__( 'Czech Koruna',       'db-price-converter-woocommerce' ) ),
+		'DKK' => array( 'kr.', esc_html__( 'Danish Krone',       'db-price-converter-woocommerce' ) ),
+		'EGP' => array( 'E£',  esc_html__( 'Egyptian Pound',     'db-price-converter-woocommerce' ) ),
+		'GEL' => array( '₾',   esc_html__( 'Georgian Lari',      'db-price-converter-woocommerce' ) ),
+		'HKD' => array( 'HK$', esc_html__( 'Hong Kong Dollar',   'db-price-converter-woocommerce' ) ),
+		'HUF' => array( 'Ft',  esc_html__( 'Hungarian Forint',   'db-price-converter-woocommerce' ) ),
+		'IDR' => array( 'Rp',  esc_html__( 'Indonesian Rupiah',  'db-price-converter-woocommerce' ) ),
+		'INR' => array( '₹',   esc_html__( 'Indian Rupee',       'db-price-converter-woocommerce' ) ),
+		'KGS' => array( '⃀',   esc_html__( 'Kyrgyz Som',         'db-price-converter-woocommerce' ) ),
+		'KRW' => array( '₩',   esc_html__( 'South Korean Won',   'db-price-converter-woocommerce' ) ),
+		'KZT' => array( '₸',   esc_html__( 'Kazakhstan Tenge',   'db-price-converter-woocommerce' ) ),
+		'MDL' => array( 'L',   esc_html__( 'Moldovan Lei',       'db-price-converter-woocommerce' ) ),
+		'NOK' => array( 'kr',  esc_html__( 'Norwegian Kroner',   'db-price-converter-woocommerce' ) ),
+		'NZD' => array( 'NZ$', esc_html__( 'New Zealand Dollar', 'db-price-converter-woocommerce' ) ),
+		'PLN' => array( 'zł',  esc_html__( 'Polish Zloty',       'db-price-converter-woocommerce' ) ),
+		'QAR' => array( '﷼',   esc_html__( 'Qatari Rial',        'db-price-converter-woocommerce' ) ),
+		'RON' => array( 'L',   esc_html__( 'Romanian Leu',       'db-price-converter-woocommerce' ) ),
+		'RSD' => array( 'дин', esc_html__( 'Serbian Dinar',      'db-price-converter-woocommerce' ) ),
+		'RUR' => array( '₽',   esc_html__( 'Russian Ruble',      'db-price-converter-woocommerce' ) ),
+		'SEK' => array( 'kr',  esc_html__( 'Swedish Kronor',     'db-price-converter-woocommerce' ) ),
+		'SGD' => array( 'S$',  esc_html__( 'Singapore Dollar',   'db-price-converter-woocommerce' ) ),
+		'THB' => array( '฿',   esc_html__( 'Thai Baht',          'db-price-converter-woocommerce' ) ),
+		'TJS' => array( 'SM',  esc_html__( 'Tajik Somoni',       'db-price-converter-woocommerce' ) ),
+		'TMT' => array( 'm',   esc_html__( 'New Turkmen Manat',  'db-price-converter-woocommerce' ) ),
+		'TRY' => array( '₺',   esc_html__( 'Turkish Lira',       'db-price-converter-woocommerce' ) ),
+		'UAH' => array( '₴',   esc_html__( 'Ukrainian Hryvnia',  'db-price-converter-woocommerce' ) ),
+		'UZS' => array( 'soʻm',esc_html__( 'Uzbek Soum',         'db-price-converter-woocommerce' ) ),
+		'VND' => array( '₫',   esc_html__( 'Vietnamese Dong',    'db-price-converter-woocommerce' ) ),
 		'XDR' => array( 'XDR', esc_html__( 'XDR',                'db-price-converter-woocommerce' ) ),
-		'SGD' => array( 'SGD', esc_html__( 'Singapore Dollar',   'db-price-converter-woocommerce' ) ),
-		'TJS' => array( 'TJS', esc_html__( 'Tajik Somoni',       'db-price-converter-woocommerce' ) ),
-		'THB' => array( 'THB', esc_html__( 'Thai Baht',          'db-price-converter-woocommerce' ) ),
-		'TRY' => array( 'TRY', esc_html__( 'Turkish Lira',       'db-price-converter-woocommerce' ) ),
-		'TMT' => array( 'TMT', esc_html__( 'New Turkmen Manat',  'db-price-converter-woocommerce' ) ),
-		'UZS' => array( 'UZS', esc_html__( 'Uzbek Soum',         'db-price-converter-woocommerce' ) ),
-		'UAH' => array( 'UAH', esc_html__( 'Ukrainian Hryvnia',  'db-price-converter-woocommerce' ) ),
-		'CZK' => array( 'CZK', esc_html__( 'Czech Crown',        'db-price-converter-woocommerce' ) ),
-		'SEK' => array( 'SEK', esc_html__( 'Swedish Kronor',     'db-price-converter-woocommerce' ) ),
-		'CHF' => array( 'CHF', esc_html__( 'Swiss Frank',        'db-price-converter-woocommerce' ) ),
-		'RSD' => array( 'RSD', esc_html__( 'Serbian Dinar',      'db-price-converter-woocommerce' ) ),
-		'ZAR' => array( 'ZAR', esc_html__( 'South African Rand', 'db-price-converter-woocommerce' ) ),
-		'KRW' => array( 'KRW', esc_html__( 'South Korean Won',   'db-price-converter-woocommerce' ) )
+		'ZAR' => array( 'R',   esc_html__( 'South African Rand', 'db-price-converter-woocommerce' ) ),
 	);
 
 	$currency_from	=			esc_html( sanitize_text_field( get_option( 'db_woo_converter_currency_from' ) ) );
@@ -111,7 +112,7 @@
 			update_option( 'db_woo_converter_currency_to', $currency_to );
 		}
 		else
-			update_option( 'db_woo_converter_currency_to', 'RUR' );
+			update_option( 'db_woo_converter_currency_to', 'EUR' );
 
 		// Enable Exchange Rate of CBR
 		if ( !empty ( $_POST[ 'if_cbr' ] ) )
@@ -160,7 +161,7 @@
 
 	if ( $date - $date_span < $now - 3 || $if_change === true )
 	{
-		$db_converter->currency( $currency_from, $now );
+		$db_converter->currency( $currency_from, $currency_to, $now );
 		$date_cbr = sanitize_text_field( get_option( 'db_woo_converter_date_cbr' ) );
 		$rate_cbr = (float) get_option( 'db_woo_converter_rate_cbr' );
 	}
@@ -200,11 +201,12 @@
 				<td>
 					<select type="text" name="currency_from" id="db_woo_converter_currency_from">
 						<?php
-							foreach ($currencies as $value => $currency)
+							foreach ( $currencies as $value => $currency )
 							{
 						?>
 						<option value="<?php echo esc_html( sanitize_text_field( $value ) ) ?>" <?php selected( $currency_from, $value ); ?>>
-							<?php echo esc_html( sanitize_text_field( $currency[ 0 ] ) ) ?> - <?php echo esc_html( sanitize_text_field( $currency[ 1 ] ) ) ?></option>
+							<?php echo esc_html( sanitize_text_field( $value ) ) ?> - <?php echo esc_html( sanitize_text_field( $currency[ 1 ] ) ) ?> <?php if ( $value !== $currency[ 0 ] ) echo '(' . esc_html( sanitize_text_field( $currency[ 0 ] ) ) . ')' ?>
+						</option>
 						<?php
 							}
 						?>
@@ -228,7 +230,16 @@
 				</th>
 				<td>
 					<select type="text" name="currency_to" id="db_woo_converter_currency_to">
-						<option value="RUR" <?php selected( $currency_to, 'RUR' ); ?>>₽ - <?php esc_html_e( 'Russian Ruble' , 'db-price-converter-woocommerce' ) ?></option>
+						<?php
+							foreach ( $currencies as $value => $currency )
+							{
+						?>
+						<option value="<?php echo esc_html( sanitize_text_field( $value ) ) ?>" <?php selected( $currency_to, $value ); ?>>
+							<?php echo esc_html( sanitize_text_field( $value ) ) ?> - <?php echo esc_html( sanitize_text_field( $currency[ 1 ] ) ) ?> <?php if ( $value !== $currency[ 0 ] ) echo '(' . esc_html( sanitize_text_field( $currency[ 0 ] ) ) . ')' ?>
+						</option>
+						<?php
+							}
+						?>
 					</select>
 				</td>
 			</tr>

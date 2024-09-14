@@ -3,7 +3,7 @@
 Plugin Name: DB Price Converter for WooCommerce
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.6.1
+Version: 1.7
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 Text Domain: db-price-converter-woocommerce
@@ -28,7 +28,7 @@ License: GPL2
 
 	if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-	define( 'DB_WOO_CONVERTER_PLUGIN_VERSION', '1.6.1' );
+	define( 'DB_WOO_CONVERTER_PLUGIN_VERSION', '1.7' );
 
 	class DB_WOO_CONVERTER_Init
 	{
@@ -42,7 +42,7 @@ License: GPL2
 		{
 
 			add_option( 'db_woo_converter_currency_from', 'USD' );
-			add_option( 'db_woo_converter_currency_to',   'RUR' );
+			add_option( 'db_woo_converter_currency_to',   'EUR' );
 			add_option( 'db_woo_converter_date',     '24010101' ); // the date when the exchange rates were uploaded from CBR
 			add_option( 'db_woo_converter_date_cbr', '2023-01-01T00:00:00+03:00' ); // the date of update by CBR
 			add_option( 'db_woo_converter_rate_cbr',      '1'   ); // the exchange rate from CBR
@@ -67,7 +67,8 @@ License: GPL2
 			if ( $date < $now - 3 )
 			{
 				$currency_from = get_option( 'db_woo_converter_currency_from' );
-				$this->currency( $currency_from, $now );
+				$currency_to   = get_option( 'db_woo_converter_currency_to'   );
+				$this->currency( $currency_from, $currency_to, $now );
 			}
 
 			add_filter( 'woocommerce_product_get_price', array( &$this, 'convert_price' ), 10, 2 );
@@ -138,19 +139,47 @@ License: GPL2
 			return $rates;
 		}
 
-		public function currency( $currency, $time )
+		public function currency( $currency_from, $currency_to, $time )
 		{
+			$status_old = (int) get_option( 'db_woo_converter_status' );
+			$status_new = 0;
+
 			$data = $this->CBR_XML_Daily_Ru();
 			$count = count( (array)$data );
-			$status_old = (int) get_option( 'db_woo_converter_status' );
 
-			if ( !empty( $data ) && $count > 0 )
-			{
+			if ( !empty( $data ) && $count > 0 ) : // check if we have received data.
+
+				/**
+				 *  Getting the date.
+				 */
 				$date_cbr = esc_html( sanitize_text_field( $data->Date ) );
-				$rate_cbr = (float) $data->Valute->$currency->Value;
 
-				if ( !empty( $date_cbr ) && $rate_cbr > 0 )
-				{
+				/**
+				 *  Getting and calculating the currency rate.
+				 */
+				if ( $currency_from === $currency_to ) : // if both currencies are the same, e.g. USD to USD.
+
+					$rate_cbr = 1;
+
+				elseif ( $currency_to === 'RUR' ) : // if the currency is converted into RUR then we just get the value from the object.
+
+					$rate_cbr = (float) $data->Valute->$currency_from->Value;
+
+				elseif ( $currency_from === 'RUR' ) : // if the currency is converted from RUR then we calculate the value as ( 1 / value ).
+
+					$rate_cbr_to = (float) $data->Valute->$currency_to->Value;
+					$rate_cbr = 1 / $rate_cbr_to;
+
+				else: // no-RUR to no-RUR.
+
+					$rate_cbr_from = (float) $data->Valute->$currency_from->Value;
+					$rate_cbr_to   = (float) $data->Valute->$currency_to->Value;
+					$rate_cbr = $rate_cbr_from / $rate_cbr_to;
+
+				endif;
+
+				if ( !empty( $date_cbr ) && $rate_cbr > 0 ) :
+
 					if ( $rate_cbr >= 0.005 ) $rate_cbr = round( $rate_cbr, 2 );
 
 					update_option ( 'db_woo_converter_date_cbr', $date_cbr );
@@ -159,12 +188,10 @@ License: GPL2
 					update_option ( 'db_woo_converter_status',	 '1'	   );
 
 					$status_new = 1;
-				}
-				else
-					$status_new = 0;
-			}
-			else
-				$status_new = 0;
+
+				endif;
+
+			endif;
 
 			$this->status( $status_old, $status_new );
 		}

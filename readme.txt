@@ -4,7 +4,7 @@ Donate link: https://bisteinoff.com
 Tags: woocommerce, price, converter, currency, exchange rate
 Requires at least: 4.6
 Tested up to: 6.6
-Stable tag: 1.6.1
+Stable tag: 1.7
 License: GPL2
 
 The plugin is used for converting the prices from one currency to another.
@@ -23,6 +23,11 @@ Terms of Use: https://www.cbr.ru/user_agreement/
 3. Enjoy
 
 == Changelog ==
+
+= 1.7 =
+* Adding all currencies in 'Covert to' option
+* Cross-calculation between any currencies
+* Symbols of the currencies
 
 = 1.6 =
 * Ready for the WordPress repositary
