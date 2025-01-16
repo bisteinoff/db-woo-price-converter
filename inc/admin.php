@@ -1,8 +1,8 @@
 <?php // THE SETTINGS PAGE
 
-	if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+	if ( !defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-	if ( ! defined( 'WC_VERSION' ) || ! class_exists( 'WooCommerce' ) ) :
+	if ( !defined( 'WC_VERSION' ) || !class_exists( 'WooCommerce' ) ) :
 
 		?>
 
@@ -22,7 +22,7 @@
 
 	else:
 
-	$db_converter = new DB_WOO_CONVERTER_Init();
+	$db_converter = new DBPL_WooConverter();
 	$d = $db_converter->thisdir();
 
 	$currencies = array(
@@ -81,7 +81,7 @@
 	$if_cbr			=			esc_html( sanitize_text_field( get_option( 'db_woo_converter_if_cbr'		) ) );
 	$margin			= (float)	esc_html( sanitize_text_field( get_option( 'db_woo_converter_margin'		) ) );
 	$round			= (int)		esc_html( sanitize_text_field( get_option( 'db_woo_converter_round'			) ) );
-	$if_change		= false; // if the currency has changed it is true
+	$if_change		=           false; // if the currency has changed it is true
 
 
 	// form submit
@@ -94,12 +94,12 @@
 			 !current_user_can( 'manage_options' ) )
 				die( esc_html_e( 'Error: You do not have the permission to update the value', 'db-price-converter-woocommerce' ) );
 
-		if ( $_POST['currency_from'] !== $currency_from || $_POST['currency_to'] !== $currency_to ) $if_change = true;
+		if ( isset( $_POST[ 'currency_from' ] ) && $_POST[ 'currency_from' ] !== $currency_from || isset( $_POST[ 'currency_to' ] ) && $_POST[ 'currency_to' ] !== $currency_to ) $if_change = true;
 
 		// Currency from
 		if ( !empty ( $_POST[ 'currency_from' ] ) )
 		{
-			$currency_from = esc_html( sanitize_text_field( $_POST[ 'currency_from' ] ) );
+			$currency_from = esc_html( sanitize_text_field( wp_unslash( $_POST[ 'currency_from' ] ) ) );
 			update_option( 'db_woo_converter_currency_from', $currency_from );
 		}
 		else
@@ -108,7 +108,7 @@
 		// Currency to
 		if ( !empty ( $_POST[ 'currency_to' ] ) )
 		{
-			$currency_to = esc_html( sanitize_text_field( $_POST[ 'currency_to' ] ) );
+			$currency_to = esc_html( sanitize_text_field( wp_unslash( $_POST[ 'currency_to' ] ) ) );
 			update_option( 'db_woo_converter_currency_to', $currency_to );
 		}
 		else
@@ -117,7 +117,7 @@
 		// Enable Exchange Rate of CBR
 		if ( !empty ( $_POST[ 'if_cbr' ] ) )
 		{
-			$if_cbr = esc_html( sanitize_text_field( $_POST[ 'if_cbr' ] ) );
+			$if_cbr = esc_html( sanitize_text_field( wp_unslash( $_POST[ 'if_cbr' ] ) ) );
 			update_option( 'db_woo_converter_if_cbr', $if_cbr );
 		}
 		else
@@ -128,7 +128,7 @@
 		// Custom Exchange Rate
 		if ( !empty ( $_POST[ 'rate' ] ) )
 		{
-			$rate = (float) esc_html( sanitize_text_field( $_POST[ 'rate' ] ) );
+			$rate = (float) esc_html( sanitize_text_field( wp_unslash( $_POST[ 'rate' ] ) ) );
 			update_option( 'db_woo_converter_rate', round ( $rate, 2 ) );
 		}
 		else
@@ -137,7 +137,7 @@
 		// Margin
 		if ( !empty ( $_POST[ 'margin' ] ) )
 		{
-			$margin = (float) esc_html( sanitize_text_field( $_POST[ 'margin' ] ) );
+			$margin = (float) esc_html( sanitize_text_field( wp_unslash( $_POST[ 'margin' ] ) ) );
 			update_option( 'db_woo_converter_margin', round ( $margin, 2 ) );
 		}
 		else
@@ -146,7 +146,7 @@
 		// Rounding
 		if ( !empty ( $_POST[ 'round' ] ) )
 		{
-			$round = (int) esc_html( sanitize_text_field( $_POST[ 'round' ] ) );
+			$round = (int) esc_html( sanitize_text_field( wp_unslash( $_POST[ 'round' ] ) ) );
 			update_option( 'db_woo_converter_round', $round );
 		}
 		else
@@ -177,7 +177,7 @@
 
 	<h2><?php esc_html_e( 'Settings', 'db-price-converter-woocommerce' ) ?></h2>
 
-	<form name="db-woo-converter" method="post" action="<?php echo esc_html( sanitize_text_field( $_SERVER['PHP_SELF'] ) ) ?>?page=<?php echo esc_html( sanitize_text_field( $d ) ) ?>&amp;updated=true">
+	<form name="db-woo-converter" method="post" action="?page=<?php echo esc_html( sanitize_text_field( $d ) ) ?>&amp;updated=true">
 
 		<table class="form-table db-woo-converter-table" width="100%">
 			<tr valign="top">

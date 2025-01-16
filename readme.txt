@@ -3,8 +3,8 @@ Contributors: bisteinoff
 Donate link: https://bisteinoff.com
 Tags: woocommerce, price, converter, currency, exchange rate
 Requires at least: 4.6
-Tested up to: 6.6
-Stable tag: 1.7
+Tested up to: 6.7
+Stable tag: 1.8
 License: GPL2
 
 The plugin is used for converting the prices from one currency to another.
@@ -23,6 +23,15 @@ Terms of Use: https://www.cbr.ru/user_agreement/
 3. Enjoy
 
 == Changelog ==
+
+= 1.8 =
+* Compatible with Wordpress 6.7
+* Verified with Plugin Check
+* Fix: Check if class `DOMDocument` exists for the SVG icon, else use a dashicon
+* Fix: Possibly undefined superglobal array index
+* Security: Use of function `wp_unslash()` to unslash POST variables
+* Security: Remove `$_SERVER[ 'PHP_SELF' ]` in the admin form
+* Security: Use of function `wp_remote_get()` instead of discouraged `file_get_contents()`
 
 = 1.7 =
 * Adding all currencies in 'Covert to' option

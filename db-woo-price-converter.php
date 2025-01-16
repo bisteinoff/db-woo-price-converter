@@ -3,14 +3,14 @@
 Plugin Name: DB Price Converter for WooCommerce
 Plugin URI: https://github.com/bisteinoff/db-woo-price-converter
 Description: The plugin is used for converting the prices from one currency to another
-Version: 1.7
+Version: 1.8
 Author: Denis Bisteinov
 Author URI: https://bisteinoff.com
 Text Domain: db-price-converter-woocommerce
 License: GPL2
 */
 
-/*  Copyright 2024  Denis BISTEINOV  (email : bisteinoff@gmail.com)
+/*  Copyright 2025  Denis BISTEINOV  (email : bisteinoff@gmail.com)
  
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -26,17 +26,15 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-	if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( !defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-	define( 'DB_WOO_CONVERTER_PLUGIN_VERSION', '1.7' );
+if ( !class_exists( 'DBPL_WooConverter' ) ) :
 
-	class DB_WOO_CONVERTER_Init
+	if ( !defined( 'DB_WOO_CONVERTER_PLUGIN_VERSION' ) )
+		define( 'DB_WOO_CONVERTER_PLUGIN_VERSION', '1.8' );
+
+	class DBPL_WooConverter
 	{
-
-		public function thisdir()
-		{
-			return basename( __DIR__ );
-		}
 
 		public function __construct()
 		{
@@ -56,9 +54,17 @@ License: GPL2
 			add_action( 'admin_menu', array( &$this, 'admin' ) );
 
 			add_action( 'admin_footer', function() {
-							wp_enqueue_style( $this->thisdir() . '-admin', plugin_dir_url( __FILE__ ) . 'css/admin.min.css', [], DB_WOO_CONVERTER_PLUGIN_VERSION, 'all' );
-						},
-						99
+
+					wp_enqueue_style(
+						$this->thisdir() . '-admin',
+						plugin_dir_url( __FILE__ ) . 'css/admin.min.css',
+						[],
+						DB_WOO_CONVERTER_PLUGIN_VERSION,
+						'all'
+					);
+
+				},
+				99
 			);
 
 			$date = get_option( 'db_woo_converter_date' );
@@ -77,14 +83,27 @@ License: GPL2
 			add_action( 'wpseo_register_extra_replacements', array( &$this, 'db_register_yoast_vars' ) );
 		}
 
+		public function thisdir()
+		{
+			return basename( __DIR__ );
+		}
+
 		public function admin() {
 
-			if ( function_exists( 'add_menu_page' ) )
-			{
+			if ( function_exists( 'add_menu_page' ) ):
 
-				$svg = new DOMDocument();
-				$svg->load( plugin_dir_path( __FILE__ ) . 'img/icon.svg' );
-				$icon = $svg->saveHTML( $svg->getElementsByTagName('svg')[0] );
+				if ( class_exists( 'DOMDocument' ) ) :
+
+					$svg = new DOMDocument();
+					$svg->load( plugin_dir_path( __FILE__ ) . 'img/icon.svg' );
+					$icon = $svg->saveHTML( $svg->getElementsByTagName( 'svg' )[ 0 ] );
+					$icon = 'data:image/svg+xml;base64,' . base64_encode( $icon );
+
+				else:
+
+					$icon = 'dashicons-welcome-widgets-menus';
+
+				endif;
 
 				add_menu_page(
 					esc_html__( 'DB Woocommerce Price Converter', 'db-price-converter-woocommerce' ),
@@ -92,11 +111,11 @@ License: GPL2
 					'manage_options',
 					$this->thisdir(),
 					array( &$this, 'admin_page_callback' ),
-					'data:image/svg+xml;base64,' . base64_encode( $icon ),
+					$icon,
 					27
-					);
+				);
 
-			}
+			endif;
 
 		}
 
@@ -116,7 +135,7 @@ License: GPL2
 				get_admin_url() . 'admin.php'
 			) );
 
-			$settings_link = "<a href='$url'>" . __( 'Settings' ) . '</a>';
+			$settings_link = "<a href='$url'>" . __( 'Settings', 'db-price-converter-woocommerce' ) . '</a>';
 
 			array_push(
 				$links,
@@ -133,7 +152,14 @@ License: GPL2
 			static $rates;
 			
 			if ( $rates === null ) {
-				$rates = json_decode( file_get_contents( 'https://www.cbr-xml-daily.ru/daily_json.js' ) );
+
+				$response = wp_remote_get( 'https://www.cbr-xml-daily.ru/daily_json.js' );
+
+				if ( is_wp_error( $response ) ) return null;
+
+				$body  = wp_remote_retrieve_body( $response );
+				$rates = json_decode( $body );
+
 			}
 
 			return $rates;
@@ -348,15 +374,26 @@ License: GPL2
 			/**
 			 * @param %%wc_price%% - change the variable for the calculated price in snippet
 			 */
-			if ( function_exists( 'wpseo_register_var_replacement' ) )
-				wpseo_register_var_replacement( '%%wc_price%%', function() {
-					global $product;
-					$price = $product->get_price();
-					return $price;
-				}, 'advanced', 'Variable for the calculated price in snippet' );
+
+			if ( function_exists( 'wpseo_register_var_replacement' ) ) :
+
+				wpseo_register_var_replacement(
+					'%%wc_price%%',
+					function() {
+						global $product;
+						$price = $product->get_price();
+						return $price;
+					},
+					'advanced',
+					'Variable for the calculated price in snippet'
+				);
+
+			endif;
 
 		}
 
 	}
 
-	$db_converter = new DB_WOO_CONVERTER_Init();
+	$db_converter = new DBPL_WooConverter();
+
+endif;
